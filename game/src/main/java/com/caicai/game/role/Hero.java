@@ -1,3 +1,8 @@
 package com.caicai.game.role;
 
-public class Hero {}
+import java.util.ArrayList;
+
+public class Hero {
+    long score;
+    ArrayList<Skill> skills;
+}
