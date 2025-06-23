@@ -7,13 +7,13 @@ public enum BlockType {
     START("S"),
     EXIT("E"),
     WALL("#"),
-    PATH(" "),
+    PATH("-"),
     TRAP("T"),
     GOLD("G"),
     LOCKER("L"),
     BOSS("B"),
-    ENEMY("X"),
-    SKILL("SK");
+    //    ENEMY("X"),
+    SKILL("$");
 
     @Getter
     private final String signal;
@@ -25,6 +25,9 @@ public enum BlockType {
         this.signal = signal;
     }
 
+    static boolean isSpecial(BlockType type) {
+        return type != WALL && type != PATH;
+    }
 
     public static int getTypeCnt() {
         return BlockType.values().length;

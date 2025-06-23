@@ -3,7 +3,7 @@ package com.caicai.game.utils;
 import lombok.Data;
 
 @Data
-public class Point {
+public class Point implements Comparable<Point> {
     private int x;
     private int y;
 
@@ -29,5 +29,10 @@ public class Point {
     @Override
     public String toString() {
         return "Point{" + "x=" + x + ", y=" + y + '}';
+    }
+
+    @Override
+    public int compareTo(Point o) {
+        return this.getX() <= o.getY() && this.getY() < o.getY() ? -1 : 1;
     }
 }
