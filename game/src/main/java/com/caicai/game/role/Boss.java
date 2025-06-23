@@ -1,5 +1,5 @@
 package com.caicai.game.role;
 
-public class Boss implements Enemy {
-    Skill powerAttack;
+public class Boss extends Enemy {
+    public Skill powerAttack;
 }

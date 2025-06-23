@@ -1,6 +1,6 @@
 package com.caicai.game.role;
 
-public interface Enemy {
-    int hp = 0;
-    Skill attack = null;
+public abstract class Enemy {
+    public int hp;
+    public Skill attack;
 }
