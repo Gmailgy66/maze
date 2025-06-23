@@ -3,9 +3,10 @@ package com.caicai.game.role;
 import java.util.ArrayList;
 
 public class Hero {
-    long score;
-    int x,y;
-//    x row, y column
-//    maze[x][y]
-    ArrayList<Skill> skills;
+    public long score;
+    public ArrayList<Skill> skills;
+    public Hero(){
+        this.score = 0;
+        this.skills = new ArrayList<>();
+    }
 }
