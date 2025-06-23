@@ -14,6 +14,8 @@ public enum BlockType {
     BOSS("B"),
     ENEMY("X"),
     SKILL("SK");
+
+    @Getter
     private final String signal;
     @Setter
     @Getter
@@ -28,7 +30,12 @@ public enum BlockType {
         return BlockType.values().length;
     }
 
-    public String getSignal() {
-        return signal;
-    }
+//    public String getSignal() {
+//        return switch (signal) {
+//            case "S" -> "S";
+//            case "E" -> "E";
+//            case "#" -> "#";
+//            case " " -> " ";
+//        }
+//    }
 }

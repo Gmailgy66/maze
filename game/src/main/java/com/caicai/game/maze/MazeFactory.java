@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.caicai.game.conf.GameConf;
 import com.caicai.game.utils.Point;
 
+import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +21,6 @@ public class MazeFactory {
     GameConf gameConf;
 
     MazeFactory() {
-        init();
     }
 
     public Maze getMaze() {
@@ -40,6 +40,7 @@ public class MazeFactory {
     private final double TBASE = 0.05;
     Map<String, Integer> maxBlockType = new HashMap<>();
 
+    @PostConstruct
     void init() {
         int size = gameConf.getSize();
         size *= size;
@@ -80,13 +81,14 @@ public class MazeFactory {
      * @return 迷宫对象
      */
     void build(Point lu, Point rd, Maze maze) {
-        if (lu.equals(rd)) {
-            return;
-        }
+
         int x0 = lu.getX();
         int x1 = rd.getX();
         int y0 = lu.getY();
         int y1 = rd.getY();
+        if (lu.equals(rd)||x0>=x1||y0>=y1) {
+            return;
+        }
         for (int i = x0; i < x1; i++) {
             for (int j = y0; j < y1; j++) {
                 BlockType blockType = randBlock();

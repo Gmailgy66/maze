@@ -7,14 +7,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 @Slf4j
 @SpringBootTest
 class MazefactoryTb {
     @Autowired
     MazeFactory mazeFactory;
     @Test
-    public void test() {
+    public void test() throws FileNotFoundException {
         Maze maze = mazeFactory.getMaze();
-        log.info("Maze generated: \n{}", maze);
+        FileOutputStream fo = new FileOutputStream("tmp"+System.currentTimeMillis());
+        log.info("Maze generated: \n{}", maze.toString());
     }
 }
