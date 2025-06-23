@@ -1,3 +1,5 @@
 package com.caicai.game.role;
 
-public abstract class Monster {}
+public class Monster implements Enemy {
+
+}

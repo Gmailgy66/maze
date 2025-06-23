@@ -1,3 +1,5 @@
 package com.caicai.game.role;
 
-public class Boss extends Monster {}
+public class Boss implements Enemy {
+    Skill powerAttack;
+}

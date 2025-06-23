@@ -7,4 +7,12 @@ public class Combat {
 
 
     }
+
+    public Boss GenerateBoss() {
+
+    }
+
+    public Enemy GenerateMonster() {
+
+    }
 }
