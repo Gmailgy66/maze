@@ -1,0 +1,4 @@
+game:
+  maze:
+    level: 0
+    size: 10
