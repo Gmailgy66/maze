@@ -49,6 +49,8 @@ public class Combat {
         else {
             role.score -= enemy.attack.damage;
         }
+
+        System.out.printf("role: %d, enemy: %d\n", role.score, enemy.hp);
     }
 
 }
