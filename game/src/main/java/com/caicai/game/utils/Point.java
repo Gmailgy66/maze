@@ -16,11 +16,18 @@ public class Point {
         this(0, 0);
     }
 
+    public boolean equals(Point other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+        return this.x == other.x && this.y == other.y;
+    }
+
     @Override
     public String toString() {
-        return "Point{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        return "Point{" + "x=" + x + ", y=" + y + '}';
     }
 }
