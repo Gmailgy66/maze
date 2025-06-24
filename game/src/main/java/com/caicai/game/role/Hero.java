@@ -1,7 +1,9 @@
 package com.caicai.game.role;
 
-import java.util.ArrayList;
+import lombok.Data;
 
+import java.util.ArrayList;
+@Data
 public class Hero {
     public long score;
     public ArrayList<Skill> skills;

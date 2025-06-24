@@ -2,7 +2,7 @@ package com.caicai.game.maze;
 
 import com.caicai.game.GameApplication;
 import com.caicai.game.conf.GameConf;
-import com.caicai.game.utils.Point;
+import com.caicai.game.common.Point;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

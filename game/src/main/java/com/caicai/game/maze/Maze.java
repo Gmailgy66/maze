@@ -1,11 +1,10 @@
 package com.caicai.game.maze;
 
+import com.caicai.game.common.Point;
+import lombok.Data;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import com.caicai.game.utils.Point;
-
-import lombok.Data;
 
 @Data
 public class Maze {
@@ -16,7 +15,7 @@ public class Maze {
     // private Set<Point> lockers;
     private Set<Point> traps = new HashSet<>();
     private Set<Point> Paths = new HashSet<>();
-    private Point START ;
+    private Point START;
     private Point EXIT;
     private Point LOCKER;
 
@@ -74,6 +73,16 @@ public class Maze {
     }
 
     public BlockType getBlock(int i, int j) {
+        if (i < 0 || i >= size || j < 0 || j >= size) {
+            return BlockType.WALL; // out of bounds
+        } else {
+            return board[i][j];
+        }
+    }
+
+    public BlockType getBlock(Point point) {
+        int i = point.getX();
+        int j = point.getY();
         if (i < 0 || i >= size || j < 0 || j >= size) {
             return BlockType.WALL; // out of bounds
         } else {

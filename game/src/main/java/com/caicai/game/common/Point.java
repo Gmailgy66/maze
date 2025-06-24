@@ -1,4 +1,4 @@
-package com.caicai.game.utils;
+package com.caicai.game.common;
 
 import lombok.Data;
 
