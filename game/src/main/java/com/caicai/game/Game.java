@@ -35,6 +35,7 @@ public class Game {
     Game(MazeFactory mazeFactory) {
         this.maze = mazeFactory.getMaze();
         this.hero = new Hero();
+        this.curPos = maze.getSTART();
         Map<String, Object> baseFields = new HashMap<>();
         baseFields.put("hero", hero);
         baseFields.put("position", curPos);

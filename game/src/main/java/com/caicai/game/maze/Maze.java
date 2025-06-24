@@ -6,10 +6,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import static com.caicai.game.maze.BlockType.*;
 
 @Slf4j
@@ -23,7 +21,7 @@ public class Maze {
     // private Set<Point> lockers;
     private Set<Point> traps = new HashSet<>();
     private Set<Point> Paths = new HashSet<>();
-    Map<Point, Skill> skillMap;
+    Map<Point, Skill> skillMap = new HashMap<>();
     private Point START;
     private Point EXIT;
     private Point LOCKER;

@@ -23,12 +23,11 @@ public class Router {
         return "maze";
 //        return game.init();
     }
-
+@ResponseBody
     @RequestMapping("/step")
-    public void step(Model model) {
+    public Result step() {
         // Here you would implement the logic to move the hero in the maze
-        model.addAttribute("result", game.getNextPoint());
-//        return game.getNextPoint();
+        return game.getNextPoint();
     }
 
     @RequestMapping("/combat")
