@@ -1,5 +1,6 @@
 package com.caicai.game;
 
+import com.caicai.game.combat.Combat;
 import com.caicai.game.common.Point;
 import com.caicai.game.common.Result;
 import com.caicai.game.common.ResultFactory;
@@ -36,6 +37,7 @@ public class Game {
         Map<String, Object> baseFields = new HashMap<>();
         baseFields.put("hero", hero);
         baseFields.put("position", curPos);
+//        baseFields.put("maze", maze);
         resultFactory = new ResultFactory(baseFields);
         log.info("Game constructor");
     }
@@ -82,13 +84,22 @@ public class Game {
 //!do move point and return the effect of handleBlock
         log.info("getNextPoint");
 //        op the block here
-//      ===================================
+
         return handleBlock(this.curPos);
     }
 
+    public Result nextTurn() {
+        log.info("nextTurn");
+        var result = resultFactory.ok();
+        result.put("fight",combat.next());
+        return result;
+    }
+
+    //
     public Result G() {
         hero.setScore(hero.getScore() + GOLD.getScore());
         return resultFactory.ok().put("type", "GOLD");
+
     }
 
     /**
@@ -104,7 +115,6 @@ public class Game {
      * Initialize the hero's position and other necessary attributes.
      */
     public Result S() {
-//        hero.setSkills();
         return resultFactory.ok().put("type", "START");
     }
 

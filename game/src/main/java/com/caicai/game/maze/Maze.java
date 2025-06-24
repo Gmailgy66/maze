@@ -2,6 +2,7 @@ package com.caicai.game.maze;
 
 import com.caicai.game.common.Point;
 import com.caicai.game.role.Skill;
+import com.caicai.game.role.Boss;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,10 +23,11 @@ public class Maze {
     // private Set<Point> lockers;
     private Set<Point> traps = new HashSet<>();
     private Set<Point> Paths = new HashSet<>();
-    Map<Point, Skill> skillMap;
     private Point START;
     private Point EXIT;
     private Point LOCKER;
+    private Boss boss;
+
     private int size;
 
     // final Point BOSS;
@@ -107,4 +109,5 @@ public class Maze {
             return board[i][j];
         }
     }
+
 }
