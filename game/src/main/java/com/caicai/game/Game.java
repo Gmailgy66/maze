@@ -39,12 +39,17 @@ public class Game {
         Result res = Result.ok();
         res.put("maze", maze);
         res.put("hero", hero);
+//        {
+//        maze:
+//
+//        }
+//
         return res;
     }
 
     public Result handleBlock(Point point) {
         log.info("handleBlock: {}", point);
-        switch (maze.getBlock(point)) {
+        return switch (maze.getBlock(point)) {
 //            the methods below are all atomic so they should return a full result when called
             case START -> S();
             case GOLD -> G();
@@ -53,12 +58,15 @@ public class Game {
             case TRAP -> T();
             case PATH -> P();
             case SKILL -> Sk();
-            default -> log.warn("Unknown point: {}", point);
-        }
-        return Result.ok();
+            default -> resultFactory.fail()
+                                    .put("error", "Unknown block type: " + maze.getBlock(point));
+        };
     }
 
-    private void P() {
+    private Result P() {
+
+        return resultFactory.ok();
+
 
     }
 
@@ -72,43 +80,62 @@ public class Game {
     }
 
     //
-    public void G() {
+    public Result G() {
+
+        return resultFactory.ok();
+
 //        log.info(" {} is {} ", "log", log);
 
     }
+
     /**
      * Handle the boss block.
      * return a list of skills in turn
      */
-    public void B() {
-        resultFactory.ok();
+    public Result B() {
+
+        return resultFactory.ok();
     }
 
     /**
      * Handle the start block.
      * Initialize the hero's position and other necessary attributes.
      */
-    public void S() {
+    public Result S() {
+
+        return resultFactory.ok();
+
 
     }
 
-    public void L() {
+    public Result L() {
+
+        return resultFactory.ok();
+
 
     }
 
-    public void T() {
+    public Result T() {
+
+        return resultFactory.ok();
+
 
     }
 
-    public void E() {
+    public Result E() {
+
         log.info("Exiting the game.");
+        return resultFactory.ok();
+
     }
 
     /**
      * Handle the skill block.
      * just tell
      */
-    private void Sk() {
-        resultFactory.ok().put("skill", hero.getSkills());
+    private Result Sk() {
+
+        return resultFactory.ok();
+
     }
 }
