@@ -11,7 +11,7 @@
         <div>
             score: <span th:text="${result.hero.score}" id='score'></span>
         </div>
-        <table class="table">
+        <table id="table">
             <tr th:each="row : ${result.maze.board}">
                 <td th:each="block : ${row}" th:text="${block}">
                 </td>
