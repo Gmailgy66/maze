@@ -3,6 +3,7 @@ package com.caicai.game.maze;
 import com.caicai.game.common.Point;
 import lombok.Data;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 public class Maze {
 
     private BlockType[][] board;
+    private boolean[][] vis;
     private String title = "吴哥窟";
     private Set<Point> gold = new HashSet<>();
     // private Set<Point> lockers;
@@ -25,7 +27,8 @@ public class Maze {
     Maze(int size) {
         this.size = size;
         this.board = new BlockType[size][size];
-        // this.BOSS = new Point(size - 1, size - 1);
+        Arrays.stream(board).forEach(row -> Arrays.fill(row, BlockType.PATH));
+        this.vis = new boolean[size][size];
     }
 
     void buildExtraInfo() {

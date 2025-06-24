@@ -5,12 +5,15 @@ import com.caicai.game.common.Result;
 import com.caicai.game.common.ResultFactory;
 import com.caicai.game.maze.Maze;
 import com.caicai.game.maze.MazeFactory;
+import com.caicai.game.maze.PointUtil;
 import com.caicai.game.role.Hero;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -21,6 +24,8 @@ public class Game {
     MazeFactory mazeFactory;
     Point curPos;
     ResultFactory resultFactory;
+    @Resource(name = "greedy")
+    PathFinder pathFinder;
 
     @Autowired
     Game(MazeFactory mazeFactory) {
@@ -29,7 +34,6 @@ public class Game {
         Map<String, Object> baseFields = new HashMap<>();
         baseFields.put("hero", hero);
         baseFields.put("position", curPos);
-//        baseFields.put("maze", maze);
         resultFactory = new ResultFactory(baseFields);
         log.info("Game constructor");
     }
@@ -39,11 +43,6 @@ public class Game {
         Result res = Result.ok();
         res.put("maze", maze);
         res.put("hero", hero);
-//        {
-//        maze:
-//
-//        }
-//
         return res;
     }
 
@@ -58,34 +57,27 @@ public class Game {
             case TRAP -> T();
             case PATH -> P();
             case SKILL -> Sk();
+            case LOCKER -> L();
             default -> resultFactory.fail()
                                     .put("error", "Unknown block type: " + maze.getBlock(point));
         };
     }
 
     private Result P() {
-
-        return resultFactory.ok();
-
-
+        return resultFactory.ok().put("type", "PATH");
     }
 
     public Result getNextPoint() {
 //!do move point and return the effect of handleBlock
         log.info("getNextPoint");
 //        op the block here
-
 //      ===================================
         return handleBlock(this.curPos);
     }
 
-    //
     public Result G() {
-
-        return resultFactory.ok();
-
+        return resultFactory.ok().put("type", "GOLD");
 //        log.info(" {} is {} ", "log", log);
-
     }
 
     /**
@@ -93,8 +85,7 @@ public class Game {
      * return a list of skills in turn
      */
     public Result B() {
-
-        return resultFactory.ok();
+        return resultFactory.ok().put("type", "BOSS");
     }
 
     /**
@@ -102,31 +93,21 @@ public class Game {
      * Initialize the hero's position and other necessary attributes.
      */
     public Result S() {
-
-        return resultFactory.ok();
-
-
+        return resultFactory.ok().put("type", "START");
     }
 
     public Result L() {
-
-        return resultFactory.ok();
-
-
+        return resultFactory.ok().put("type", "LOCKER");
     }
 
     public Result T() {
-
-        return resultFactory.ok();
-
-
+        return resultFactory.ok().put("type", "TRAP");
     }
 
     public Result E() {
 
         log.info("Exiting the game.");
-        return resultFactory.ok();
-
+        return resultFactory.ok().put("type", "EXIT");
     }
 
     /**
@@ -134,8 +115,31 @@ public class Game {
      * just tell
      */
     private Result Sk() {
+        return resultFactory.ok().put("type", "SKILL");
+    }
+}
 
-        return resultFactory.ok();
+@Component
+interface PathFinder {
+    Point getNextPoint(Maze maze, Point curPos);
+}
 
+@Component
+class Dp implements PathFinder {
+    @Override
+    public Point getNextPoint(Maze maze, Point curPos) {
+        List<Point> surrendPoints = PointUtil.getSurrendPoints(maze, curPos);
+        return null;
+
+//        surrendPoints.forEach();
+    }
+}
+
+@Component
+class Greedy implements PathFinder {
+    @Override
+    public Point getNextPoint(Maze maze, Point curPos) {
+        // Implement the greedy pathfinding logic here
+        return null; // Placeholder return value
     }
 }
