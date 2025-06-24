@@ -4,23 +4,28 @@ import com.caicai.game.Game;
 import com.caicai.game.common.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 public class Router {
 
     @Autowired
     Game game;
 
     @RequestMapping("/init")
-    public Result init() {
-        return game.init();
+    public String init(Model model) {
+        var result = game.init();
+        System.out.println(result);
+        model.addAttribute("result", result);
+        return "maze";
+//        return game.init();
     }
 
     @RequestMapping("/step")
-    public Result step() {
+    public void step(Model model) {
         // Here you would implement the logic to move the hero in the maze
-        return game.getNextPoint();
+        model.addAttribute("result", game.getNextPoint());
+//        return game.getNextPoint();
     }
 }
