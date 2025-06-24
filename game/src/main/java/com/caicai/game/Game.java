@@ -67,22 +67,20 @@ public class Game {
         log.info("getNextPoint");
 //        op the block here
 
-
 //      ===================================
         return handleBlock(this.curPos);
     }
 
     //
     public void G() {
+//        log.info(" {} is {} ", "log", log);
 
     }
-
     /**
      * Handle the boss block.
      * return a list of skills in turn
      */
     public void B() {
-
         resultFactory.ok();
     }
 

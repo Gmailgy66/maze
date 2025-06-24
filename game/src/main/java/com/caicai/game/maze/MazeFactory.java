@@ -1,8 +1,8 @@
 package com.caicai.game.maze;
 
 import com.caicai.game.GameApplication;
-import com.caicai.game.conf.GameConf;
 import com.caicai.game.common.Point;
+import com.caicai.game.conf.GameConf;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,8 @@ public class MazeFactory {
     public Maze getMaze() {
         log.info("Maze generated with size: {}", gameConf.getSize());
         Maze maze = new Maze(gameConf.getSize());
+        init();
+        log.info("inited limits of the blocks");
         build(0, 0, gameConf.getSize() - 1, gameConf.getSize() - 1, maze, Integer.valueOf(MAXSP));
         log.info("inited will link the blocks");
         mklink(maze);
@@ -229,7 +231,7 @@ public class MazeFactory {
         }
         if (x0 == x1 && y0 == y1) {
             // ! 只有一个点
-            BlockType blockType = randBlock(null, mxSp < 1 ? Set.of(BlockType.WALL, BlockType.PATH) : null);
+            BlockType blockType = randBlock(null, null);
             maze.setBlock(x0, y0, blockType);
             return;
         }
