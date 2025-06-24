@@ -47,6 +47,13 @@ public class Game {
         return res;
     }
 
+    public Result openCombat(){
+        log.info("openCombat");
+        var result = resultFactory.ok();
+        result.put("fight","open combat!");
+        return result;
+    }
+
     public Result handleBlock(Point point) {
         log.info("handleBlock: {}", point);
         return switch (maze.getBlock(point)) {

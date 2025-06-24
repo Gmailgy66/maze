@@ -28,4 +28,12 @@ public class Router {
         model.addAttribute("result", game.getNextPoint());
 //        return game.getNextPoint();
     }
+
+    @RequestMapping("/combat")
+    public String combat(Model model) {
+        // Here you would implement the logic to move the hero in the maze
+        model.addAttribute("result", game.openCombat());
+        return "combat";
+//        return game.getNextPoint();
+    }
 }

@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Open Combat</title>
+    <link rel="stylesheet" th:href="@{/combat.css}">
 </head>
 <body>
-
+    <div class="container">
+        <img th:src="@{/images/fight.jpg}" alt="fight">
+        <textarea th:text="${result.fight}">
+        </textarea>
+    </div>
 </body>
 </html>
