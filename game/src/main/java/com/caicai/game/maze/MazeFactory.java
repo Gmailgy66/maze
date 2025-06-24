@@ -27,9 +27,10 @@ public class MazeFactory {
         Maze maze = new Maze(gameConf.getSize());
         init();
         log.info("inited limits of the blocks");
-        build(0, 0, gameConf.getSize() - 1, gameConf.getSize() - 1, maze, Integer.valueOf(MAXSP));
+        genMaze(0,0, gameConf.getSize() - 1, gameConf.getSize() - 1, new Random(), maze);
+//        build(0, 0, gameConf.getSize() - 1, gameConf.getSize() - 1, maze, Integer.valueOf(MAXSP));
         log.info("inited will link the blocks");
-        mklink(maze);
+//        mklink(maze);
         log.info("linked the blocks");
         postBuild(maze);
         log.info("recheck the SPECIAL Points");
@@ -135,129 +136,98 @@ public class MazeFactory {
     int[] x_ = new int[]{0, 0, 1, -1, 1, -1, 1, -1};
     int[] y_ = new int[]{-1, 1, 0, 0, 1, -1, -1, 1};
 
-    void mklink(Maze maze) {
-        int size = maze.getSize();
-        boolean[][] visited = new boolean[size][size];
-        List<Point> blocks = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                // do bfs to merge all point in the same block
-                if (maze.getBlock(i, j) != BlockType.WALL && visited[i][j] == false) {
-                    Queue<Point> aux = new ArrayDeque<>();
-                    aux.add(new Point(i, j));
-                    blocks.add(new Point(i, j));
-                    while (!aux.isEmpty()) {
-                        Point p = aux.poll();
-                        visited[p.getX()][p.getY()] = true;
-                        for (int k = 0; k < 8; k++) {
-                            int nx = p.getX() + x_[k];
-                            int ny = p.getY() + y_[k];
-                            if (maze.getBlock(nx, ny) == BlockType.WALL || visited[nx][ny]) {
-                                continue;
-                            } else {
-                                aux.add(new Point(nx, ny));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        // to to link all blocks to the first block
-        for (int i = 1; i < blocks.size(); i++) {
-            doLink(blocks.get(0), blocks.get(i), maze);
-        }
-    }
 
-    void doLink(Point lu, Point rb, Maze maze) {
-        // assert s is at the left up of rb;
-        if (lu.compareTo(rb) != -1) {
-            // swap
-            Point temp = lu;
-            lu = rb;
-            rb = temp;
-        }
-        int lx = lu.getX();
-        int ly = lu.getY();
-        int rx = rb.getX();
-        int ry = rb.getY();
-        while (lx < rx && ly < ry) {
-            lx++;
-            ly++;
-            if (maze.getBlock(lx, ly) == BlockType.WALL) {
-                maze.setBlock(lx, ly, randBlock(Set.of(BlockType.WALL)));
-            }
-        }
-        while (lx < rx) {
-            lx++;
-            if (maze.getBlock(lx, ly) == BlockType.WALL) {
-                maze.setBlock(lx, ly, randBlock(Set.of(BlockType.WALL)));
-            }
-        }
-        while (ly < ry) {
-            ly++;
-            if (maze.getBlock(lx, ly) == BlockType.WALL) {
-                maze.setBlock(lx, ly, randBlock(Set.of(BlockType.WALL)));
-            }
-        }
 
+
+
+
+    /**
+     * 在给定的线上打开一扇位置随机的门
+     */
+    private void openAdoor(int x1, int y1, int x2, int y2, Random r, Maze maze) {
+        int pos;
+        if (x1 == x2) {
+            pos = y1 + r.nextInt((y2 - y1) / 2 + 1) * 2;//在奇数位置开门
+            maze.setBlock(x1, pos, randBlock());
+//            blocked[x1][pos] = false;
+        } else if (y1 == y2) {
+            pos = x1 + r.nextInt((x2 - x1) / 2 + 1) * 2;
+            maze.setBlock(pos, y1, randBlock());
+//            blocked[pos][y1] = false;
+        } else {
+            System.out.println("wrong");
+        }
     }
 
     /**
-     * 生成迷宫
+     * 迷宫生成算法，采用递归方式实现，随机画横竖两条线，然后在线上随机开三扇门
      *
-     * @param Point lu 迷宫左上角点
-     * @param Point rd 迷宫右下角点
-     * @return 迷宫对象
+     * @param x：迷宫起点的x坐标
+     * @param y：迷宫起点的y坐标
+     * @param height：迷宫的高度
+     * @param width：迷宫的宽度  ***********
+     *                     *         *
+     *                     *         *
+     *                     ***********
+     *                     针对上述迷宫，四个参数为：1,1,2,9
      */
-    double[] getRandCap() {
-        double[] percent = new double[]{0.25, 0.25, 0.25, 0.25};
-        double tot = 1;
-        Random rand = new Random();
-        // max origin
-        double v = rand.nextDouble(0.2, 0.6);
-        for (int i = 0; i < 4; i++) {
-            percent[i] = v;
-            tot -= v;
-            v = rand.nextDouble(0, tot);
-        }
-        return percent;
+    private void genMaze(int x, int y, int height, int width, Random r, Maze maze) {
+        int xPos, yPos;
 
-    }
-
-    void build(int x0, int y0, int x1, int y1, Maze maze, Integer mxSp) {
-
-        if (x0 > x1 || y0 > y1) {
+        if (height <= 2 || width <= 2) {
             return;
         }
-        if (x0 == x1 && y0 == y1) {
-            // ! 只有一个点
-            BlockType blockType = randBlock(null, null);
-            maze.setBlock(x0, y0, blockType);
-            return;
-        }
-        // !the board should be divided into 4 parts to enable connected
-        // [0, 2]
-        // [0,1] [2,2]
 
-        int midX = (x0 + x1) / 2;
-        int midY = (y0 + y1) / 2;
-        List<Point[]> points = new ArrayList<>();
-        // generate the 4 parts\
-        // let the order the finish the 4 part randomly
-        points.add(new Point[]{new Point(x0, y0), new Point(midX, midY)});
-        points.add(new Point[]{new Point(midX + 1, y0), new Point(x1, midY)});
-        points.add(new Point[]{new Point(x0, midY + 1), new Point(midX, y1)});
-        points.add(new Point[]{new Point(midX + 1, midY + 1),
-                               new Point(x1, y1)});
-        // shuffle the points
-        Collections.shuffle(points);
-        double[] percent = getRandCap();
-        for (int i = 0; i < points.size(); i++) {
-            Point[] p = points.get(i);
-            build(p[0].getX(), p[0].getY(), p[1].getX(), p[1].getY(), maze, (int) Math.ceil(mxSp * percent[i]));
+        //横着画线，在偶数位置画线
+        xPos = x + r.nextInt(height / 2) * 2 + 1;
+        for (int i = y; i < y + width; i++) {
+            maze.setBlock(xPos, i, BlockType.WALL);
+//            blocked[xPos][i] = true;
         }
-        // check whether the inner maze is linked
-        // if not linked then check whether the inner has any block except the wall, if
-        // so then
+
+        //竖着画一条线，在偶数位置画线
+        yPos = y + r.nextInt(width / 2) * 2 + 1;
+        for (int i = x; i < x + height; i++) {
+            maze.setBlock(i, yPos, BlockType.WALL);
+//            blocked[i][yPos] = true;
+        }
+
+        //随机开三扇门，左侧墙壁为1，逆时针旋转
+        int isClosed = r.nextInt(4) + 1;
+        switch (isClosed) {
+            case 1:
+                openAdoor(xPos + 1, yPos, x + height - 1, yPos,r,maze);// 2
+                openAdoor(xPos, yPos + 1, xPos, y + width - 1,r,maze);// 3
+                openAdoor(x, yPos, xPos - 1, yPos,r,maze);// 4
+                break;
+            case 2:
+                openAdoor(xPos, yPos + 1, xPos, y + width - 1,r,maze);// 3
+                openAdoor(x, yPos, xPos - 1, yPos,r,maze);// 4
+                openAdoor(xPos, y, xPos, yPos - 1,r,maze);// 1
+                break;
+            case 3:
+                openAdoor(x, yPos, xPos - 1, yPos,r,maze);// 4
+                openAdoor(xPos, y, xPos, yPos - 1,r,maze);// 1
+                openAdoor(xPos + 1, yPos, x + height - 1, yPos,r,maze);// 2
+                break;
+            case 4:
+                openAdoor(xPos, y, xPos, yPos - 1,r,maze);// 1
+                openAdoor(xPos + 1, yPos, x + height - 1, yPos,r,maze);// 2
+                openAdoor(xPos, yPos + 1, xPos, y + width - 1,r,maze);// 3
+                break;
+            default:
+                break;
+        }
+
+        // 左上角
+        genMaze(x, y, xPos - x, yPos - y, r, maze);
+        // 右上角
+        genMaze(x, yPos + 1, xPos - x, width - yPos + y - 1, r, maze);
+        // 左下角
+        genMaze(xPos + 1, y, height - xPos + x - 1, yPos - y, r, maze);
+        // 右下角
+        genMaze(xPos + 1, yPos + 1, height - xPos + x - 1, width - yPos + y - 1, r, maze);
     }
+
+
 }
