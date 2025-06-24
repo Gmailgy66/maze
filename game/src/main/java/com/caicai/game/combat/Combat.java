@@ -12,18 +12,23 @@ import com.caicai.game.role.*;
 public class Combat {
     Hero role;
     Boss enemy;
-    boolean isInitialized = false;
+//    boolean isInitialized = false;
 
-
-    public void initialize(Hero role, Boss enemy) {
-        this.isInitialized = true;
+    public Combat(Hero role, Boss enemy) {
         this.role = role;
         this.enemy = enemy;
         role.skills.sort((Skill s1, Skill s2) -> s2.damage - s1.damage);
     }
 
+//    public void initialize(Hero role, Boss enemy) {
+//        this.isInitialized = true;
+//        this.role = role;
+//        this.enemy = enemy;
+//        role.skills.sort((Skill s1, Skill s2) -> s2.damage - s1.damage);
+//    }
+
 //    @PostMapping("/next")
-    public void next () {
+    public String next () {
         // 玩家回合
         int pos = -1;
         for (int i = 0; i < role.skills.size(); i++) {
@@ -39,7 +44,7 @@ public class Combat {
         if (enemy.hp <= 0) {
             // 战斗结束
             System.out.println("win");
-            return;
+            return "You win!";
         }
 
         // 敌人回合
@@ -51,7 +56,7 @@ public class Combat {
             role.score -= enemy.attack.damage;
         }
 
-        System.out.printf("role: %d, enemy: %d\n", role.score, enemy.hp);
+        return String.format("role: %d, enemy: %d\n", role.score, enemy.hp);
     }
 
 }

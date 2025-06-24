@@ -1,6 +1,7 @@
 package com.caicai.game.maze;
 
 import com.caicai.game.common.Point;
+import com.caicai.game.role.Boss;
 import lombok.Data;
 
 import java.util.HashSet;
@@ -18,6 +19,7 @@ public class Maze {
     private Point START;
     private Point EXIT;
     private Point LOCKER;
+    private Boss boss;
 
     private int size;
 
@@ -89,4 +91,5 @@ public class Maze {
             return board[i][j];
         }
     }
+
 }

@@ -1,5 +1,6 @@
 package com.caicai.game;
 
+import com.caicai.game.combat.Combat;
 import com.caicai.game.common.Point;
 import com.caicai.game.common.Result;
 import com.caicai.game.common.ResultFactory;
@@ -21,6 +22,7 @@ public class Game {
     MazeFactory mazeFactory;
     Point curPos;
     ResultFactory resultFactory;
+    Combat combat;
 
     @Autowired
     Game(MazeFactory mazeFactory) {
@@ -48,6 +50,7 @@ public class Game {
     }
 
     public Result openCombat(){
+        combat = new Combat(hero, maze.getBoss());
         log.info("openCombat");
         var result = resultFactory.ok();
         result.put("fight","open combat!");
@@ -84,6 +87,13 @@ public class Game {
 
 //      ===================================
         return handleBlock(this.curPos);
+    }
+
+    public Result nextTurn() {
+        log.info("nextTurn");
+        var result = resultFactory.ok();
+        result.put("fight",combat.next());
+        return result;
     }
 
     //
