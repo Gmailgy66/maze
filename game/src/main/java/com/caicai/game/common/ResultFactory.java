@@ -8,10 +8,8 @@ public class ResultFactory {
     //    here store the quote of the obj
 //    List<Object> requiredFields;
     Map<String, Object> requiredFields;
-    ResultFactory resultFactory;
     public ResultFactory(Map requiredFields) {
         this.requiredFields = requiredFields;
-        this.resultFactory = new ResultFactory(requiredFields);
     }
 
     public Result ok() {

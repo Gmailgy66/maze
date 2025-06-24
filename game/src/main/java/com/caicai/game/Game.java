@@ -66,6 +66,8 @@ public class Game {
 //!do move point and return the effect of handleBlock
         log.info("getNextPoint");
 //        op the block here
+
+
 //      ===================================
         return handleBlock(this.curPos);
     }
@@ -80,6 +82,7 @@ public class Game {
      * return a list of skills in turn
      */
     public void B() {
+
         resultFactory.ok();
     }
 

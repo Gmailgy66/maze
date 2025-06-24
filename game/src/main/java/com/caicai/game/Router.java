@@ -19,6 +19,6 @@ public class Router {
     @RequestMapping("/step")
     public Result step() {
         // Here you would implement the logic to move the hero in the maze
-        return
+        return game.getNextPoint();
     }
 }
