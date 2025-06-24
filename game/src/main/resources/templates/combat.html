@@ -6,10 +6,12 @@
     <link rel="stylesheet" th:href="@{/combat.css}">
 </head>
 <body>
+    <script th:src="@{/combat.js}"></script>
     <div class="container">
         <img th:src="@{/images/fight.jpg}" alt="fight">
-        <textarea th:text="${result.fight}">
+        <textarea th:text="${result.fight}" id="text">
         </textarea>
+        <button id="btn" onclick="handleNextTurn">next turn</button>
     </div>
 </body>
 </html>

@@ -5,7 +5,9 @@ import com.caicai.game.common.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class Router {
@@ -22,10 +24,12 @@ public class Router {
 //        return game.init();
     }
 
-    @RequestMapping("/step")
-    public void step(Model model) {
+    @ResponseBody
+    @RequestMapping("/nextStep")
+    public Result step() {
+        return game.getNextPoint();
         // Here you would implement the logic to move the hero in the maze
-        model.addAttribute("result", game.getNextPoint());
+//        model.addAttribute("result", game.getNextPoint());
 //        return game.getNextPoint();
     }
 
@@ -36,4 +40,11 @@ public class Router {
         return "combat";
 //        return game.getNextPoint();
     }
+
+    @ResponseBody
+    @RequestMapping("/nextTurn")
+    public Result nextTurn() {
+        return game.nextTurn();
+    }
+
 }

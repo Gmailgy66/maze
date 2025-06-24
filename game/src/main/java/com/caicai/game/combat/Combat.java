@@ -1,14 +1,7 @@
 package com.caicai.game.combat;
 
 import com.caicai.game.role.*;
-//import org.springframework.stereotype.Component;
-//import org.springframework.web.bind.annotation.CrossOrigin;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//
-//@Component
-//@RequestMapping("/combat")
-//@CrossOrigin
+
 public class Combat {
     Hero role;
     Boss enemy;
@@ -27,7 +20,6 @@ public class Combat {
 //        role.skills.sort((Skill s1, Skill s2) -> s2.damage - s1.damage);
 //    }
 
-//    @PostMapping("/next")
     public String next () {
         // 玩家回合
         int pos = -1;

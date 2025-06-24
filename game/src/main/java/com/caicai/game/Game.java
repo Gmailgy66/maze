@@ -6,6 +6,7 @@ import com.caicai.game.common.Result;
 import com.caicai.game.common.ResultFactory;
 import com.caicai.game.maze.Maze;
 import com.caicai.game.maze.MazeFactory;
+import com.caicai.game.maze.PointUtil;
 import com.caicai.game.role.Hero;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
