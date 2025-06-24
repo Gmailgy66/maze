@@ -2,7 +2,6 @@ package com.caicai.game.maze;
 
 import com.caicai.game.common.Point;
 import com.caicai.game.role.Skill;
-import com.caicai.game.role.Boss;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import static com.caicai.game.maze.BlockType.*;
+
 @Slf4j
 @Data
 public class Maze {
@@ -23,11 +23,10 @@ public class Maze {
     // private Set<Point> lockers;
     private Set<Point> traps = new HashSet<>();
     private Set<Point> Paths = new HashSet<>();
+    Map<Point, Skill> skillMap;
     private Point START;
     private Point EXIT;
     private Point LOCKER;
-    private Boss boss;
-
     private int size;
 
     // final Point BOSS;
@@ -56,12 +55,12 @@ public class Maze {
 
     public void doStepOnPoint(Point point) {
         BlockType block = getBlock(point);
-        switch (block){
+        switch (block) {
             case SKILL -> {
                 skillMap.remove(point);
                 setBlock(point, PATH);
             }
-            case GOLD ->{
+            case GOLD -> {
                 gold.remove(point);
                 setBlock(point, PATH);
             }
