@@ -29,7 +29,6 @@ public class Router {
     public Result step() {
         return game.getNextPoint();
         // Here you would implement the logic to move the hero in the maze
-//        model.addAttribute("result", game.getNextPoint());
 //        return game.getNextPoint();
     }
 
