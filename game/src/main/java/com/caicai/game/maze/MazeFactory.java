@@ -27,10 +27,11 @@ public class MazeFactory {
         Maze maze = new Maze(gameConf.getSize());
         init();
         log.info("inited limits of the blocks");
-        genMaze(0,0, gameConf.getSize() - 1, gameConf.getSize() - 1, new Random(), maze);
-//        build(0, 0, gameConf.getSize() - 1, gameConf.getSize() - 1, maze, Integer.valueOf(MAXSP));
+        genMaze(0, 0, gameConf.getSize() - 1, gameConf.getSize() - 1, new Random(), maze);
+        // build(0, 0, gameConf.getSize() - 1, gameConf.getSize() - 1, maze,
+        // Integer.valueOf(MAXSP));
         log.info("inited will link the blocks");
-//        mklink(maze);
+        // mklink(maze);
         log.info("linked the blocks");
         postBuild(maze);
         log.info("recheck the SPECIAL Points");
@@ -79,18 +80,18 @@ public class MazeFactory {
             // get a random path// 使用Stream API
             Set<Point> paths = maze.getPaths();
             Point randomPoint = paths.stream()
-                                     .skip(new Random().nextInt(paths.size()))
-                                     .findFirst()
-                                     .orElse(null);
+                    .skip(new Random().nextInt(paths.size()))
+                    .findFirst()
+                    .orElse(null);
             paths.remove(randomPoint);
             maze.setBlock(randomPoint, BlockType.START);
         }
         if (maze.getEXIT() == null) {
             Set<Point> paths = maze.getPaths();
             Point randomPoint = paths.stream()
-                                     .skip(new Random().nextInt(paths.size()))
-                                     .findFirst()
-                                     .orElse(null);
+                    .skip(new Random().nextInt(paths.size()))
+                    .findFirst()
+                    .orElse(null);
             paths.remove(randomPoint);
             maze.setBlock(randomPoint, BlockType.EXIT);
             log.error("Maze has no exit point");
@@ -131,45 +132,33 @@ public class MazeFactory {
     }
 
     /**
-     * check whether the maze is linked
-     */
-    int[] x_ = new int[]{0, 0, 1, -1, 1, -1, 1, -1};
-    int[] y_ = new int[]{-1, 1, 0, 0, 1, -1, -1, 1};
-
-
-
-
-
-
-    /**
      * 在给定的线上打开一扇位置随机的门
      */
     private void openAdoor(int x1, int y1, int x2, int y2, Random r, Maze maze) {
         int pos;
         if (x1 == x2) {
-            pos = y1 + r.nextInt((y2 - y1) / 2 + 1) * 2;//在奇数位置开门
+            pos = y1 + r.nextInt((y2 - y1) / 2 + 1) * 2;// 在奇数位置开门
             maze.setBlock(x1, pos, randBlock());
-//            blocked[x1][pos] = false;
+            // blocked[x1][pos] = false;
         } else if (y1 == y2) {
             pos = x1 + r.nextInt((x2 - x1) / 2 + 1) * 2;
             maze.setBlock(pos, y1, randBlock());
-//            blocked[pos][y1] = false;
+            // blocked[pos][y1] = false;
         } else {
             System.out.println("wrong");
         }
     }
 
     /**
-     * 迷宫生成算法，采用递归方式实现，随机画横竖两条线，然后在线上随机开三扇门
-     *
-     * @param x：迷宫起点的x坐标
-     * @param y：迷宫起点的y坐标
-     * @param height：迷宫的高度
-     * @param width：迷宫的宽度  ***********
-     *                     *         *
-     *                     *         *
-     *                     ***********
-     *                     针对上述迷宫，四个参数为：1,1,2,9
+     * 生成迷宫
+     * 递归分割法
+     * 
+     * @param x      起始x坐标
+     * @param y      起始y坐标
+     * @param height 高度
+     * @param width  宽度
+     * @param r      随机数生成器
+     * @param maze   迷宫对象
      */
     private void genMaze(int x, int y, int height, int width, Random r, Maze maze) {
         int xPos, yPos;
@@ -178,42 +167,42 @@ public class MazeFactory {
             return;
         }
 
-        //横着画线，在偶数位置画线
+        // 横着画线，在偶数位置画线
         xPos = x + r.nextInt(height / 2) * 2 + 1;
         for (int i = y; i < y + width; i++) {
             maze.setBlock(xPos, i, BlockType.WALL);
-//            blocked[xPos][i] = true;
+            // blocked[xPos][i] = true;
         }
 
-        //竖着画一条线，在偶数位置画线
+        // 竖着画一条线，在偶数位置画线
         yPos = y + r.nextInt(width / 2) * 2 + 1;
         for (int i = x; i < x + height; i++) {
             maze.setBlock(i, yPos, BlockType.WALL);
-//            blocked[i][yPos] = true;
+            // blocked[i][yPos] = true;
         }
 
-        //随机开三扇门，左侧墙壁为1，逆时针旋转
+        // 随机开三扇门，左侧墙壁为1，逆时针旋转
         int isClosed = r.nextInt(4) + 1;
         switch (isClosed) {
             case 1:
-                openAdoor(xPos + 1, yPos, x + height - 1, yPos,r,maze);// 2
-                openAdoor(xPos, yPos + 1, xPos, y + width - 1,r,maze);// 3
-                openAdoor(x, yPos, xPos - 1, yPos,r,maze);// 4
+                openAdoor(xPos + 1, yPos, x + height - 1, yPos, r, maze);// 2
+                openAdoor(xPos, yPos + 1, xPos, y + width - 1, r, maze);// 3
+                openAdoor(x, yPos, xPos - 1, yPos, r, maze);// 4
                 break;
             case 2:
-                openAdoor(xPos, yPos + 1, xPos, y + width - 1,r,maze);// 3
-                openAdoor(x, yPos, xPos - 1, yPos,r,maze);// 4
-                openAdoor(xPos, y, xPos, yPos - 1,r,maze);// 1
+                openAdoor(xPos, yPos + 1, xPos, y + width - 1, r, maze);// 3
+                openAdoor(x, yPos, xPos - 1, yPos, r, maze);// 4
+                openAdoor(xPos, y, xPos, yPos - 1, r, maze);// 1
                 break;
             case 3:
-                openAdoor(x, yPos, xPos - 1, yPos,r,maze);// 4
-                openAdoor(xPos, y, xPos, yPos - 1,r,maze);// 1
-                openAdoor(xPos + 1, yPos, x + height - 1, yPos,r,maze);// 2
+                openAdoor(x, yPos, xPos - 1, yPos, r, maze);// 4
+                openAdoor(xPos, y, xPos, yPos - 1, r, maze);// 1
+                openAdoor(xPos + 1, yPos, x + height - 1, yPos, r, maze);// 2
                 break;
             case 4:
-                openAdoor(xPos, y, xPos, yPos - 1,r,maze);// 1
-                openAdoor(xPos + 1, yPos, x + height - 1, yPos,r,maze);// 2
-                openAdoor(xPos, yPos + 1, xPos, y + width - 1,r,maze);// 3
+                openAdoor(xPos, y, xPos, yPos - 1, r, maze);// 1
+                openAdoor(xPos + 1, yPos, x + height - 1, yPos, r, maze);// 2
+                openAdoor(xPos, yPos + 1, xPos, y + width - 1, r, maze);// 3
                 break;
             default:
                 break;
@@ -228,6 +217,5 @@ public class MazeFactory {
         // 右下角
         genMaze(xPos + 1, yPos + 1, height - xPos + x - 1, width - yPos + y - 1, r, maze);
     }
-
 
 }

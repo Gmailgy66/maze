@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.caicai.game.maze.BlockType.GOLD;
+
 @Component
 @Slf4j
 public class Game {
@@ -46,16 +48,16 @@ public class Game {
         return res;
     }
 
-    public Result openCombat(){
+    public Result openCombat() {
         log.info("openCombat");
         var result = resultFactory.ok();
-        result.put("fight","open combat!");
+        result.put("fight", "open combat!");
         return result;
     }
 
     public Result handleBlock(Point point) {
         log.info("handleBlock: {}", point);
-        return switch (maze.getBlock(point)) {
+        Result res = switch (maze.getBlock(point)) {
 //            the methods below are all atomic so they should return a full result when called
             case START -> S();
             case GOLD -> G();
@@ -68,6 +70,8 @@ public class Game {
             default -> resultFactory.fail()
                                     .put("error", "Unknown block type: " + maze.getBlock(point));
         };
+        maze.doStepOnPoint(point);
+        return res;
     }
 
     private Result P() {
@@ -83,8 +87,8 @@ public class Game {
     }
 
     public Result G() {
+        hero.setScore(hero.getScore() + GOLD.getScore());
         return resultFactory.ok().put("type", "GOLD");
-//        log.info(" {} is {} ", "log", log);
     }
 
     /**
@@ -100,6 +104,7 @@ public class Game {
      * Initialize the hero's position and other necessary attributes.
      */
     public Result S() {
+//        hero.setSkills();
         return resultFactory.ok().put("type", "START");
     }
 
