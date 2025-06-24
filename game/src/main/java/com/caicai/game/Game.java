@@ -23,6 +23,7 @@ import static com.caicai.game.maze.BlockType.GOLD;
 @Slf4j
 public class Game {
     Maze maze;
+    Combat combat;
     Hero hero;
     MazeFactory mazeFactory;
     Point curPos;
