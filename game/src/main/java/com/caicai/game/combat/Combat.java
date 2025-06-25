@@ -35,7 +35,6 @@ public class Combat {
         role.skills.get(pos).nowCd = role.skills.get(pos).cd;
         if (enemy.hp <= 0) {
             // 战斗结束
-            System.out.println("win");
             return "You win!";
         }
 
