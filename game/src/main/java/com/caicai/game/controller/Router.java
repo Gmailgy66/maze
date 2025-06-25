@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.caicai.game.Game;
 import com.caicai.game.common.Result;
 import com.caicai.game.conf.GameConf;
+import com.caicai.game.quiz.Question;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -58,6 +61,12 @@ public class Router {
     @RequestMapping("/nextTurn")
     public Result nextTurn() {
         return game.nextTurn();
+    }
+
+    @ResponseBody
+    @RequestMapping("/quiz")
+    public Map<String, Object> quiz() {
+        return new Question().start();
     }
 
 }
