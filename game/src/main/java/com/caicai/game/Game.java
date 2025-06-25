@@ -182,7 +182,24 @@ class Dp implements PathFinder {
 class Greedy implements PathFinder {
     @Override
     public Point getNextPoint(Maze maze, Point curPos) {
-        // Implement the greedy pathfinding logic here
-        return null; // Placeholder return value
+        List<Point> surrendPoints = PointUtil.getSurrendPoints(maze, curPos);
+        Point best = surrendPoints.stream()
+                                  .filter(p -> maze.getBlock(p) == GOLD)
+                                  .max((p1, p2) -> {
+                                      double score = maze.getBlock(p1)
+                                                         .getScore();
+                                      Double dis = PointUtil.getDis(p1, curPos);
+                                      double score2 = maze.getBlock(p1)
+                                                          .getScore();
+                                      Double dis2 = PointUtil.getDis(p1, curPos);
+                                      return (int) (score / dis) > (int) (score2 / dis2) ? 1 : -1;
+                                  })
+                                  .orElse(null);
+//        ! if
+        if (best == null) {
+            return null;
+        }
+        return null;
     }
+
 }

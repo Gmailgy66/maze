@@ -2,16 +2,12 @@ package com.caicai.game.maze;
 
 import com.caicai.game.common.Point;
 import com.caicai.game.conf.GameConf;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static com.caicai.game.common.RandUtil.randEven;
 import static com.caicai.game.common.RandUtil.randOdd;
@@ -28,6 +24,15 @@ public class MazeFactory {
         Maze maze = new Maze(gameConf.getSize());
         init();
         log.info("inited limits of the blocks");
+        try {
+            FileOutputStream fo = new FileOutputStream("maze.txt", false);
+            fo.write(String.valueOf(maze.getBoardSize()).getBytes());
+            fo.write('\n');
+            fo.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("{} is {} ", "e", e);
+        }
         genMaze(1, 1, gameConf.getSize(), gameConf.getSize(), new Random(), maze);
         // build(0, 0, gameConf.getSize() - 1, gameConf.getSize() - 1, maze,
         // Integer.valueOf(MAXSP));
@@ -97,7 +102,11 @@ public class MazeFactory {
             log.error("Maze has no exit point");
         }
     }
-public void doDraw(){}
+
+    public void doDraw(Maze maze, List<Point>l) {
+
+    }
+
     BlockType randBlock(Object... condition) {
         int typeCnt = BlockType.getTypeCnt();
         Set excludedType = null;
@@ -138,15 +147,6 @@ public void doDraw(){}
      * @param maze   迷宫对象
      */
     private void genMaze(int x, int y, int height, int width, Random r, Maze maze) {
-        try {
-//            System.out.println(maze);
-//            FileOutputStream fo = new FileOutputStream("maze.txt", true);
-//            fo.write(maze.toString().getBytes());
-//            fo.write('\n');
-//            fo.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         int xPos, yPos;
         if (height <= 2 || width <= 2) {
@@ -172,14 +172,24 @@ public void doDraw(){}
                           new Point(randOdd(xPos, x + height), yPos)};
         int jump = r.nextInt(0, 4);
 //        doDraw(xPos, yPos, points, jump, maze);
+
         try {
+            FileOutputStream fo = new FileOutputStream("maze.txt", true);
+            fo.write(new Point(xPos, yPos).toString().getBytes());
+            fo.write('\n');
             for (int j = 0; j < 4; j++) {
                 if (j == jump) {
                     continue;
                 }
                 maze.setBlock(points[j], randBlock());
+                fo.write(points[j].toString().getBytes());
+                fo.write('\n');
             }
-            // 左上角
+            System.out.println(maze);
+            fo.write(maze.toString().getBytes());
+            fo.write('\n');
+            fo.close();
+
             genMaze(x, y, xPos - x, yPos - y, r, maze);
             // 右上角
             genMaze(x, yPos + 1, xPos - x, width - yPos + y - 1, r, maze);
