@@ -12,7 +12,7 @@ public class PointUtil {
         for (int i = 0; i < x_.length; i++) {
             int x = point.getX() + x_[i];
             int y = point.getY() + y_[i];
-            if (x >= 0 && x < maze.getSize() && y >= 0 && y < maze.getSize()) {
+            if (x >= 0 && x < maze.getValidSize() && y >= 0 && y < maze.getValidSize()) {
                 points.add(new Point(x, y));
             }
         }

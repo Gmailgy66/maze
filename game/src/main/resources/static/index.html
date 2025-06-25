@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>maze game</h1>
+<div id="app">
+    <table>
+        <tr v-for="(row, rowIndex) in board" :key="rowIndex">
+            <td v-for="(block, colIndex) in row" :key="colIndex">{{ block }}</td>
+        </tr>
+    </table>
+    <button @click="handleNextStep"> next step</button>
+</div>
+
+</body>
+<script src="./vue.js"></script>
+<script>
+    const vm = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            board: [
+                ['.', '.', '.', '#', '.'],
+                ['#', '#', '.', '#', '.'],
+                ['.', '.', '.', '.', '.'],
+                ['#', '#', '#', '#', '.'],
+                ['.', '.', '.', '#', '.']
+            ],
+        },
+        methods: {
+            init() {
+                fetch("http://localhost:8080/nextStep")
+                    .then(
+                        function (res) {
+                            res.json().then(data => {
+                                let score = document.getElementById('score')
+                                console.log(data);
+                                let x = data["position"].x
+                                let y = data["position"].y
+                                let cell = document.getElementById('table').rows[x].cells[y]
+                                // lastCellRef
+                                // before the new cell , recover the last cell first
+                                if (lastCellInfo) {
+                                    lastCellInfo = {...lastCellInfo}
+                                }
+                                lastCellInfo = cell;
+                                lastCellInfo = {...cell};
+                                score.innerText = data.hero.score
+                                cell.innerText = "Hero"
+                                cell.style.backgroundColor = "red"
+                            })
+                        }
+                    )
+            }
+            },
+            handleNextStep() {
+                fetch("http://localhost:8080/nextStep")
+                    .then(
+                        function (res) {
+                            res.json().then(data => {
+                                let score = document.getElementById('score')
+                                console.log(data);
+                                let x = data["position"].x
+                                let y = data["position"].y
+                                let cell = document.getElementById('table').rows[x].cells[y]
+                                // lastCellRef
+                                // before the new cell , recover the last cell first
+                                if (lastCellRef) {
+                                    lastCellRef = {...lastCellInfo}
+                                }
+                                lastCellInfo = cell;
+                                lastCellInfo = {...cell};
+                                score.innerText = data.hero.score
+                                cell.innerText = "Hero"
+                                cell.style.backgroundColor = "red"
+                            })
+                        }
+                    )
+            }
+        }
+    });
+</script>
+
+</html>

@@ -5,10 +5,9 @@ import com.caicai.game.role.Skill;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.file.Path;
 import java.util.*;
 
-import static com.caicai.game.maze.BlockType.*;
+import static com.caicai.game.maze.BlockType.PATH;
 
 @Slf4j
 @Data
@@ -25,13 +24,21 @@ public class Maze {
     private Point START;
     private Point EXIT;
     private Point LOCKER;
-    private int size;
+    private int validSize;
+    private int boardSize;
 
     // final Point BOSS;
     Maze(int size) {
-        this.size = size;
-        this.board = new BlockType[size][size];
+        this.validSize = size;
+        this.boardSize = size + 2; // +2 for walls
+        this.board = new BlockType[boardSize][boardSize];
         Arrays.stream(board).forEach(row -> Arrays.fill(row, BlockType.PATH));
+        for (int i = 0; i < boardSize; i++) {
+            board[i][0] = BlockType.WALL;
+            board[i][this.boardSize - 1] = BlockType.WALL;
+            board[0][i] = BlockType.WALL;
+            board[this.boardSize - 1][i] = BlockType.WALL;
+        }
         this.vis = new boolean[size][size];
     }
 
@@ -79,8 +86,8 @@ public class Maze {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
                 sb.append(board[i][j].getSignal());
                 // sb.append(" ");
             }
@@ -90,7 +97,7 @@ public class Maze {
     }
 
     public BlockType getBlock(int i, int j) {
-        if (i < 0 || i >= size || j < 0 || j >= size) {
+        if (i < 0 || i >= validSize || j < 0 || j >= validSize) {
             return BlockType.WALL; // out of bounds
         } else {
             return board[i][j];
@@ -100,7 +107,7 @@ public class Maze {
     public BlockType getBlock(Point point) {
         int i = point.getX();
         int j = point.getY();
-        if (i < 0 || i >= size || j < 0 || j >= size) {
+        if (i < 0 || i >= validSize || j < 0 || j >= validSize) {
             return BlockType.WALL; // out of bounds
         } else {
             return board[i][j];

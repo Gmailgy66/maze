@@ -1,0 +1,9 @@
+#app{
+    display: flex;
+    align-content: center;
+    position: relative;
+}
+#board{
+    position: absolute;
+    left: 20%;
+}

@@ -4,6 +4,7 @@ import com.caicai.game.combat.Combat;
 import com.caicai.game.common.Point;
 import com.caicai.game.common.Result;
 import com.caicai.game.common.ResultFactory;
+import com.caicai.game.conf.GameConf;
 import com.caicai.game.maze.Maze;
 import com.caicai.game.maze.MazeFactory;
 import com.caicai.game.maze.PointUtil;
@@ -25,27 +26,37 @@ public class Game {
     Maze maze;
     Combat combat;
     Hero hero;
-    MazeFactory mazeFactory;
     Point curPos;
     ResultFactory resultFactory;
-    @Resource(name = "greedy")
-    PathFinder pathFinder;
+
 
     @Autowired
-    Game(MazeFactory mazeFactory) {
-        this.maze = mazeFactory.getMaze();
-        this.hero = new Hero();
-        this.curPos = maze.getSTART();
-        Map<String, Object> baseFields = new HashMap<>();
-        baseFields.put("hero", hero);
-        baseFields.put("position", curPos);
-//        baseFields.put("maze", maze);
+    MazeFactory mazeFactory;
+    @Resource(name = "greedy")
+    PathFinder pathFinder;
+    @Autowired
+    private GameConf gameConf;
+
+    Map<String, Object> baseFields = new HashMap<>();
+
+    Game() {
+//        reset();
+
+
         resultFactory = new ResultFactory(baseFields);
         log.info("Game constructor");
     }
 
+    public void reset() {
+        this.maze = mazeFactory.getMaze();
+        this.hero = new Hero();
+        this.curPos = maze.getSTART();
+        baseFields.put("hero", hero);
+        baseFields.put("position", curPos);
+    }
+
     public Result init() {
-        log.info("Game init");
+        reset();
         Result res = Result.ok();
         res.put("maze", maze);
         res.put("hero", hero);
@@ -57,6 +68,11 @@ public class Game {
         var result = resultFactory.ok();
         result.put("fight", "open combat!");
         return result;
+    }
+
+    public Result fullInfo() {
+        log.info("fullInfo");
+        return resultFactory.ok().put("maze", maze);
     }
 
     public Result handleBlock(Point point) {
@@ -75,7 +91,10 @@ public class Game {
                                     .put("error", "Unknown block type: " + maze.getBlock(point));
         };
         maze.doStepOnPoint(point);
-        return res;
+        curPos.setX((int) (Math.random() * gameConf.getSize()));
+        curPos.setY((int) (Math.random() * gameConf.getSize()));
+//        Point.randPoint(gameConf.getSize(), gameConf.getSize());
+        return resultFactory.ok();
     }
 
     private Result P() {
@@ -93,7 +112,7 @@ public class Game {
     public Result nextTurn() {
         log.info("nextTurn");
         var result = resultFactory.ok();
-        result.put("fight",combat.next());
+        result.put("fight", combat.next());
         return result;
     }
 

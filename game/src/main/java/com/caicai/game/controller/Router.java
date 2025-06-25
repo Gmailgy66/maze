@@ -2,21 +2,31 @@ package com.caicai.game.controller;
 
 import com.caicai.game.Game;
 import com.caicai.game.common.Result;
+import com.caicai.game.conf.GameConf;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+@Slf4j
 @Controller
 public class Router {
 
     @Autowired
     Game game;
+    @Autowired
+    private GameConf gameConf;
 
     @RequestMapping("/init")
-    public String init(Model model) {
+    public String init(Model model, @RequestParam(name = "size", required = false) Integer size) {
+        if (size != null && size >= 3 && size < 100) {
+            gameConf.setSize(size);
+            log.info("Game size set to {}", size);
+        }
         var result = game.init();
         System.out.println(result);
         model.addAttribute("result", result);
@@ -24,20 +34,34 @@ public class Router {
 //        return game.init();
     }
 
+    @RequestMapping("/maze")
+    public String maze(@RequestParam(name = "size", required = false) Integer size) {
+        if (size != null && size >= 3 && size < 100) {
+            gameConf.setSize(size);
+            log.info("Game size set to {}", size);
+        }
+        var result = game.init();
+//        System.out.println(result);
+        return "redirect:/maze.html";
+//        return game.init();
+    }
+
+    @ResponseBody
+    @RequestMapping("/fullUpdate")
+    public Result fullUpdate() {
+        return  game.fullInfo();
+    }
+
     @ResponseBody
     @RequestMapping("/nextStep")
     public Result step() {
         return game.getNextPoint();
-        // Here you would implement the logic to move the hero in the maze
-//        return game.getNextPoint();
     }
 
     @RequestMapping("/combat")
     public String combat(Model model) {
-        // Here you would implement the logic to move the hero in the maze
         model.addAttribute("result", game.openCombat());
         return "combat";
-//        return game.getNextPoint();
     }
 
     @ResponseBody
