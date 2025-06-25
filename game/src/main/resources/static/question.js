@@ -4,7 +4,7 @@ import "./question.css"
 const question = defineComponent({
     name: 'question',
     setup() {
-        const visible = ref(false)
+        const visible =defineModel()
         const question = ref('')
         const answer = ref(null)
         const finish = ref(false)
@@ -22,12 +22,18 @@ const question = defineComponent({
             document.getElementById('ipt2').value = answer.value[1]
             document.getElementById('ipt3').value = answer.value[2]
         }
+
+        function endGame(){
+            visible.value = false
+        }
+
         return {
             visible,
             question,
             answer,
             finish,
-            startSolve
+            startSolve,
+            endGame
         }
     },
     template: `
@@ -39,7 +45,7 @@ const question = defineComponent({
                 <input type="number" min="0" max="9" maxlength="1" class="digit-box" id="ipt3">
             </div>
             <button @click="startSolve">开始解答</button>
-            <button v-if="finish">结束</button>
+            <button v-if="finish" @click="endGame">结束</button>
         </div>
     `
 })
