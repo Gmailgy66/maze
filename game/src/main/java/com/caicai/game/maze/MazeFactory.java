@@ -186,7 +186,7 @@ public class MazeFactory {
                 fo.write('\n');
             }
             System.out.println(maze);
-            fo.write(maze.toString().getBytes());
+//            fo.write(maze.toString().getBytes());
             fo.write('\n');
             fo.close();
 

@@ -26,6 +26,7 @@ public class Maze {
     private Point LOCKER;
     private int validSize;
     private int boardSize;
+    private int[][] scores;
 
     // final Point BOSS;
     Maze(int size) {
@@ -40,6 +41,10 @@ public class Maze {
             board[this.boardSize - 1][i] = BlockType.WALL;
         }
         this.vis = new boolean[size][size];
+    }
+
+    void setScores(int[][] scores) {
+        this.scores = scores;
     }
 
     void buildExtraInfo() {
@@ -82,6 +87,11 @@ public class Maze {
 
     public void setBlock(int x, int y, BlockType blockType) {
         board[x][y] = blockType;
+    }
+
+    public int getScore(int x, int y) {
+//        return scores[x][y];
+        return 0;
     }
 
     public String toString() {

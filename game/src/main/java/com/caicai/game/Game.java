@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -165,6 +166,27 @@ public class Game {
 @Component
 interface PathFinder {
     Point getNextPoint(Maze maze, Point curPos);
+
+    default public List<Point> getBestWay(Maze maze, Point p1, Point p2) {
+        return null;
+    }
+
+    default public List<Point> getBestWayByDp(Maze maze, Point p1, Point p2) {
+        int x1 = p1.getX();
+        int y1 = p1.getY();
+        int x2 = p2.getX();
+        int y2 = p2.getY();
+        int w = y2 - y1;
+        int h = x2 - x1;
+//        get the smallest cost from p1 to p2
+        int[][] dp = new int[h][w];
+        Arrays.fill(dp, Arrays.copyOf(new int[w], Integer.MAX_VALUE));
+        for (int i = 1; i <= h; i++) {
+            for (int j = 1; j <= w; j++) {
+//                dp[i][j] = dp[]
+            }
+        } return null;
+    }
 }
 
 @Component
@@ -183,8 +205,9 @@ class Greedy implements PathFinder {
     @Override
     public Point getNextPoint(Maze maze, Point curPos) {
         List<Point> surrendPoints = PointUtil.getSurrendPoints(maze, curPos);
+//        find a  Point that is closest to curPos
         Point best = surrendPoints.stream()
-                                  .filter(p -> maze.getBlock(p) == GOLD)
+                                  .filter(p -> maze.getGold().contains(p))
                                   .max((p1, p2) -> {
                                       double score = maze.getBlock(p1)
                                                          .getScore();
@@ -195,11 +218,15 @@ class Greedy implements PathFinder {
                                       return (int) (score / dis) > (int) (score2 / dis2) ? 1 : -1;
                                   })
                                   .orElse(null);
-//        ! if
-        if (best == null) {
-            return null;
-        }
+        nextTar = best;
         return null;
     }
+
+    public Point nextTar = null;
+
+    public Point getExit(Maze maze, Point point) {
+        return null;
+    }
+
 
 }
