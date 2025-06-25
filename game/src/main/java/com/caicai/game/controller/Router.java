@@ -1,16 +1,17 @@
 package com.caicai.game.controller;
 
-import com.caicai.game.Game;
-import com.caicai.game.common.Result;
-import com.caicai.game.conf.GameConf;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.caicai.game.Game;
+import com.caicai.game.common.Result;
+import com.caicai.game.conf.GameConf;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
@@ -24,6 +25,9 @@ public class Router {
     @RequestMapping("/init")
     public String init(Model model, @RequestParam(name = "size", required = false) Integer size) {
         if (size != null && size >= 3 && size < 100) {
+            if (size % 2 == 0) {
+                size += 1; // Ensure size is odd
+            }
             gameConf.setSize(size);
             log.info("Game size set to {}", size);
         }
@@ -31,25 +35,28 @@ public class Router {
         System.out.println(result);
         model.addAttribute("result", result);
         return "maze";
-//        return game.init();
+        // return game.init();
     }
 
-    @RequestMapping("/maze")
+    @RequestMapping("/game.html")
     public String maze(@RequestParam(name = "size", required = false) Integer size) {
         if (size != null && size >= 3 && size < 100) {
+            if (size % 2 == 0) {
+                size += 1; // Ensure size is odd
+            }
             gameConf.setSize(size);
             log.info("Game size set to {}", size);
         }
         var result = game.init();
-//        System.out.println(result);
-        return "redirect:/maze.html";
-//        return game.init();
+        // System.out.println(result);
+        return "game";
+        // return game.init();
     }
 
     @ResponseBody
     @RequestMapping("/fullUpdate")
     public Result fullUpdate() {
-        return  game.fullInfo();
+        return game.fullInfo();
     }
 
     @ResponseBody

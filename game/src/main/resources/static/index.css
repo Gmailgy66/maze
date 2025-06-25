@@ -1,9 +1,251 @@
-#app{
-    display: flex;
-    align-content: center;
-    position: relative;
+body {
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    color: #333;
 }
-#board{
-    position: absolute;
-    left: 20%;
+
+#app {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Header section */
+h1 {
+    color: white;
+    text-align: center;
+    font-size: 2.5rem;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Form styling */
+form {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+form label {
+    font-weight: 600;
+    color: #555;
+}
+
+form input {
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+form input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* Horizontal game container */
+.game-container {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 30px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* Game board section - now on the right */
+.board-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    order: 2; /* Move board to the right */
+}
+
+/* Controls section - now on the left */
+.controls-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 250px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    order: 1; /* Move controls to the left */
+}
+
+/* Game info section */
+.game-info {
+    background: #e3f2fd;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #2196F3;
+}
+
+.game-info h3 {
+    margin: 0 0 10px 0;
+    color: #1976D2;
+    font-size: 1.2rem;
+}
+
+.game-info .stat {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+    font-weight: 500;
+}
+
+#board {
+    border-collapse: collapse;
+    border: 3px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#board td {
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+    font-size: 18px;
+    position: relative;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+#board td:hover {
+    background-color: #e9ecef;
+    transform: scale(1.05);
+}
+
+/* Button container - now vertical in controls section */
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: capitalize;
+    width: 100%;
+}
+
+button:first-child {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+}
+
+button:nth-child(2) {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+}
+
+button:last-child {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Game legend */
+.game-legend {
+    background: #f1f8e9;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #4CAF50;
+}
+
+.game-legend h3 {
+    margin: 0 0 10px 0;
+    color: #388e3c;
+    font-size: 1.1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.legend-icon {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .game-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .controls-section {
+        width: 100%;
+        max-width: 500px;
+    }
+    
+    .button-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    #app {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    #board td {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
+    
+    .controls-section {
+        min-width: auto;
+    }
+    
+    .button-container {
+        flex-direction: column;
+    }
 }

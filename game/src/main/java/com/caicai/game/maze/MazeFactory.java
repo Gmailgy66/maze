@@ -44,9 +44,9 @@ public class MazeFactory {
      *
      * @return 迷宫对象
      */
-    private final double GBASE = 0.1;
-    private final double SKBASE = 0.05;
-    private final double TBASE = 0.05;
+    private final double GBASE = 0.2;
+    private final double SKBASE = 0.1;
+    private final double TBASE = 0.1;
     private Integer MAXSP;
 
     Map<BlockType, Integer> maxBlockType = new HashMap<>();
@@ -139,11 +139,11 @@ public void doDraw(){}
      */
     private void genMaze(int x, int y, int height, int width, Random r, Maze maze) {
         try {
-            System.out.println(maze);
-            FileOutputStream fo = new FileOutputStream("maze.txt", true);
-            fo.write(maze.toString().getBytes());
-            fo.write('\n');
-            fo.close();
+//            System.out.println(maze);
+//            FileOutputStream fo = new FileOutputStream("maze.txt", true);
+//            fo.write(maze.toString().getBytes());
+//            fo.write('\n');
+//            fo.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
