@@ -22,21 +22,21 @@ public class Router {
     @Autowired
     private GameConf gameConf;
 
-    @RequestMapping("/init")
-    public String init(Model model, @RequestParam(name = "size", required = false) Integer size) {
-        if (size != null && size >= 3 && size < 100) {
-            if (size % 2 == 0) {
-                size += 1; // Ensure size is odd
-            }
-            gameConf.setSize(size);
-            log.info("Game size set to {}", size);
-        }
-        var result = game.init();
-        System.out.println(result);
-        model.addAttribute("result", result);
-        return "maze";
-        // return game.init();
-    }
+//    @RequestMapping("/init")
+//    public String init(Model model, @RequestParam(name = "size", required = false) Integer size) {
+//        if (size != null && size >= 3 && size < 100) {
+//            if (size % 2 == 0) {
+//                size += 1; // Ensure size is odd
+//            }
+//            gameConf.setSize(size);
+//            log.info("Game size set to {}", size);
+//        }
+//        var result = game.init();
+//        System.out.println(result);
+//        model.addAttribute("result", result);
+//        return "maze";
+//        // return game.init();
+//    }
 
     @RequestMapping("/game.html")
     public String maze(@RequestParam(name = "size", required = false) Integer size) {
@@ -65,11 +65,11 @@ public class Router {
         return game.getNextPoint();
     }
 
-    @RequestMapping("/combat")
-    public String combat(Model model) {
-        model.addAttribute("result", game.openCombat());
-        return "combat";
-    }
+//    @RequestMapping("/combat")
+//    public String combat(Model model) {
+//        model.addAttribute("result", game.openCombat());
+//        return "combat";
+//    }
 
     @ResponseBody
     @RequestMapping("/nextTurn")
