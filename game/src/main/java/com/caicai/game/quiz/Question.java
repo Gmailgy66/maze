@@ -28,7 +28,8 @@ public class Question {
         }
     }
 
-    public void start() {
+    public HashMap<String, Object> start() {
+        HashMap<String, Object> map = new HashMap<>();
         // 随机生成三位数
         int[] a = new int[3];
         Set<Integer> nums = new HashSet<>();
@@ -46,9 +47,10 @@ public class Question {
                 问题：
                 有一个三位数互不重复的排列，请你使用回溯法找出这个三位数，将答案填写在下方的方框中
                 """;
-        System.out.println(question);
+        map.put("question", question);
         ArrayList<Integer> ans = new ArrayList<>();
         solve(a, ans, 0, used);
-        System.out.println(ans);
+        map.put("ans",ans);
+        return map;
     }
 }
