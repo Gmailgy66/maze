@@ -53,7 +53,8 @@ public class Router {
 
     @RequestMapping("/combat")
     public String combat(Model model) {
-        model.addAttribute("result", game.openCombat());
+//        model.addAttribute("result", game.openCombat());
+        game.openCombat();
         return "combat";
     }
 

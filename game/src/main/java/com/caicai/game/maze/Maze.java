@@ -59,6 +59,7 @@ public class Maze {
                     case EXIT -> EXIT = np;
                     case PATH -> Paths.add(np);
                     case SKILL -> skillMap.put(np, Skill.randomSkill());
+                    case BOSS -> boss = new Boss(new Random().nextInt(300)+100, Skill.randomSkill(),Skill.randomSkill());
                 }
             }
         }

@@ -9,4 +9,9 @@ public class Boss extends Enemy {
         this.powerAttack = new Skill();
         this.hp = 0;
     }
+    public Boss(int hp,Skill attack,Skill powerAttack) {
+        this.hp = hp;
+        this.attack = attack;
+        this.powerAttack = powerAttack;
+    }
 }
