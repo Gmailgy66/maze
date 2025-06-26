@@ -4,7 +4,7 @@ const vm = new Vue({
             message: 'Hello Vue!',
             board: [
                 ["WALL", "WALL", "WALL", "WALL", "WALL"],
-                ["WALL", "PATH", "PATH", "GOAL", "WALL"],
+                ["WALL", "PATH  ", "PATH", "GOAL", "WALL"],
                 ["WALL", "HERO", "PATH", "PATH", "WALL"],
                 ["WALL", "PATH", "PATH", "PATH", "WALL"],
                 ["WALL", "WALL", "WALL", "WALL", "WALL"]
@@ -46,10 +46,8 @@ const vm = new Vue({
                                 // console.log(data);
                                 this.board = data.maze.board;
                                 this.heroPos = {x: data["position"].x, y: data["position"].y};
-
-                                console.log("data[position] is ", data["position"]);
                                 console.log("data is when mounted", data);
-                                console.log("this.heroPos is ", this.heroPos);
+                                // console.log("this.heroPos is ", this.heroPos);
                             });
                         }
                     );
@@ -69,50 +67,28 @@ const vm = new Vue({
 
             //     }
             // },
-            notifyBackend(data) {
-                // const data = {
-                //     position: this.heroPos,
-                //     msg: "notify from client"
-                // };
-                fetch("http://localhost:8080/notify", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                })
-                    .then(res => {
-                        if (res.ok) {
-                            console.log("Notify backend successfully");
-                        } else {
-                            console.error("Failed to notify backend");
-                        }
-                    })
-                    .catch(err => console.error("Error notifying backend:", err));
-            },
             handleSolve() {
-                const data = this.getRes("http://localhost:8080/solve");
-                this.path = data.path;
-                this.path.forEach(p => {
-                    if (board[p.x][p.y] === "GOLD") {
-                        this.segments.push([]);
-                    }
-                    this.segments[this.segments.length - 1].push(p);
-                });
-                console.log(this.segments)
-            }
-        },
-        getRes(url) {
-            (async function fetchData() {
-                await fetch("http://localhost:8080/nextPointWithPath")
+                fetch("http://localhost:8080/nextPointWithPath")
                     .then(res => res.json().then(data => {
+                        console.log("data is", data)
                         return data;
                     }));
-            })();
+                // this.path = data.path;
+                // this.path.forEach(p => {
+                //     if (board[p.x][p.y] === "GOLD") {
+                //         this.segments.push([]);
+                //     }
+                //     this.segments[this.segments.length - 1].push(p);
+                // });
+                // console.log(this.segments);
+            },
+            getRes(url) {
+
+            },
+            handleNextStep() {
+                data = this.getRes("http://localhost:8080/nextPointWithPath");
+                console.log("data is ", data);
+            }
         },
-        handleNextStep() {
-            data = this.getRes("http://localhost:8080/nextPointWithPath");
-            console.log("data is ", data);
-        }
     }
 );
