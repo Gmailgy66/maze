@@ -1,12 +1,18 @@
 package com.caicai.game.common;
 
-import com.caicai.game.maze.Maze;
-import com.caicai.game.maze.PointUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-
 import static com.caicai.game.maze.BlockType.WALL;
+import com.caicai.game.maze.Maze;
+import com.caicai.game.maze.PointUtil;
 import static com.caicai.game.maze.PointUtil.getDis;
 
 @Component
@@ -47,12 +53,12 @@ public interface PathFinder {
                 break;
             }
             nxt.stream()
-               .filter(p -> vis.contains(p) == false && maze.getBlock(p) != WALL && openSet.contains(p) == false)
-               .forEach(p -> {
-                   cost.put(p, cost.get(cp) + 1);
-                   par.put(p, cp);
-                   openSet.add(p);
-               });
+                    .filter(p -> vis.contains(p) == false && maze.getBlock(p) != WALL && openSet.contains(p) == false)
+                    .forEach(p -> {
+                        cost.put(p, cost.get(cp) + 1);
+                        par.put(p, cp);
+                        openSet.add(p);
+                    });
         }
         return res.reversed();
     }
@@ -275,8 +281,10 @@ class Greedy implements PathFinder {
     }
 
     public Point nextTar = null;
+
     public Point getExit(Maze maze, Point point) {
         return null;
     }
 
 }
+

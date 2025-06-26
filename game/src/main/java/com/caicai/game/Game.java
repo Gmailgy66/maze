@@ -1,10 +1,7 @@
 package com.caicai.game;
 
 import com.caicai.game.combat.Combat;
-import com.caicai.game.common.PathFinder;
-import com.caicai.game.common.Point;
-import com.caicai.game.common.Result;
-import com.caicai.game.common.ResultFactory;
+import com.caicai.game.common.*;
 import com.caicai.game.conf.GameConf;
 import com.caicai.game.maze.BlockType;
 import com.caicai.game.maze.Maze;
@@ -34,7 +31,7 @@ public class Game {
 
     @Autowired
     MazeFactory mazeFactory;
-    @Resource(name = "dp")
+    @Resource(name = "greedy")
     PathFinder pathFinder;
     @Autowired
     private GameConf gameConf;
@@ -165,51 +162,12 @@ public class Game {
     }
 
     public Result nextPointWithPath() {
-        Point nxtPoint = pathFinder.getNextPoint(maze, curPos);
-        List<Point> path = pathFinder.getBestWayByAStar(maze, curPos, nxtPoint);
-        Result res = resultFactory.ok()
-                                  .put("path", path)
-                                  .put("target", nxtPoint);
-        Point point = path.stream()
-                          .filter(p -> maze.getBlock(p) == BlockType.BOSS)
-                          .findFirst()
-                          .orElse(null);
-        if (point != null) {
-            res.put("bossOnPath", true)
-               .put("bossPosition", point)
-               .put("bossInfo", maze.getBoss());
-        }
-        curPos = nxtPoint;
-        return res;
+        PathSolve solver = new PathSolve();
+        var path = solver.solve(maze);
+        System.out.println(path);
+        return resultFactory.ok().put("path", path);
     }
 
     // the data should contains the actually pos is
-    public Result reactToNotify(Map<String, Object> data) {
-        curPos.setX((Integer) ((HashMap) data.get("position")).get("x"));
-        curPos.setY((Integer) ((HashMap) data.get("position")).get("y"));
-        List path = (List) data.get("path"); // this is not used now, but can be used to recalculate the path
-        data.get("combated");
-//        path.forEach(p -> {
-//            BlockType block = maze.getBlock(p);
-//            switch (block) {
-//                case GOLD -> {
-////                    only remove if the gold is the target one
-//                    if (curPos.equals(p)) {
-//                        maze.getGold().remove(p);
-//                    }
-//                }
-//                case SKILL -> maze.setBlock(p, BlockType.PATH);
-//                case BOSS -> {
-//                    res.put("bossOnPath", true)
-//                       .put("bossPosition", p)
-//                       .put("bossInfo", maze.getBoss());
-//                    maze.setBlock(p, PATH);
-//                }
-//                // the score should be calculated in the front end
-//            }
-//        });
-//        data.get("path")
-        log.info("recalculated position by the info from client: {}", data);
-        return resultFactory.ok();
-    }
+
 }

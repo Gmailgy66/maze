@@ -76,7 +76,6 @@ public class MazeFactory {
     }
 
     void postBuild(Maze maze) {
-        maze.buildExtraInfo();
         // check whether exit and start is in the maze
         if (maze.getSTART() == null) {
             log.error("Maze has no start point");
@@ -101,6 +100,7 @@ public class MazeFactory {
             maze.setBlock(randomPoint, BlockType.EXIT);
             log.error("Maze has no exit point");
         }
+        maze.buildExtraInfo();
     }
 
     public void doDraw(Maze maze, List<Point>l) {

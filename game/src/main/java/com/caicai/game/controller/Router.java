@@ -57,13 +57,6 @@ public class Router {
         return game.nextPointWithPath();
     }
 
-    @ResponseBody
-    @RequestMapping("/notify")
-    public Result notify(@RequestBody Map<String, Object> data) {
-        log.info("Received notify data: {}", data);
-        return game.reactToNotify(data);
-    }
-
     @RequestMapping("/combat")
     public String combat(Model model) {
 //        model.addAttribute("result", game.openCombat());

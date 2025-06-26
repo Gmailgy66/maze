@@ -30,6 +30,8 @@ public class Maze {
     private int validSize;
     private int boardSize;
     private int[][] scores;
+    public static final int GOLD_SCORE = 5;
+    public static final int TRAP_SCORE = -3;
 
     // final Point BOSS;
     Maze(int size) {
@@ -129,7 +131,7 @@ public class Maze {
     }
 
     public BlockType getBlock(int i, int j) {
-        if (i < 0 || i >= validSize || j < 0 || j >= validSize) {
+        if (i < 0 || i > validSize || j < 0 || j > validSize) {
             return BlockType.WALL; // out of bounds
         } else {
             return board[i][j];
