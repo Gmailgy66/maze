@@ -1,6 +1,7 @@
 package com.caicai.game.maze;
 
 import com.caicai.game.common.Point;
+import com.caicai.game.role.Boss;
 import com.caicai.game.role.Skill;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,7 @@ import static com.caicai.game.maze.BlockType.PATH;
 @Slf4j
 @Data
 public class Maze {
-
+    private Boss boss;
     private BlockType[][] board;
     private boolean[][] vis;
     private String title = "吴哥窟";

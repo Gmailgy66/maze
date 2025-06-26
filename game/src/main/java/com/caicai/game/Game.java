@@ -63,6 +63,7 @@ public class Game {
     }
 
     public Result openCombat() {
+        combat = new Combat(hero, maze.getBoss());
         log.info("openCombat");
         var result = resultFactory.ok();
         result.put("fight", "open combat!");
