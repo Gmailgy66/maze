@@ -31,6 +31,7 @@ public class Maze {
 
     // final Point BOSS;
     Maze(int size) {
+        this.scores = new int[size + 2][size + 2];
         this.validSize = size;
         this.boardSize = size + 2; // +2 for walls
         this.board = new BlockType[boardSize][boardSize];
@@ -50,8 +51,14 @@ public class Maze {
             for (int j = 0; j < board[i].length; j++) {
                 final Point np = new Point(i, j);
                 switch (board[i][j]) {
-                    case GOLD -> gold.add(np);
-                    case TRAP -> traps.add(np);
+                    case GOLD -> {
+                        gold.add(np);
+                        setScore(i, j, 10);
+                    }
+                    case TRAP -> {
+                        traps.add(np);
+                        setScore(i, j, -3);
+                    }
                     case START -> START = np;
                     case EXIT -> EXIT = np;
                     case PATH -> Paths.add(np);
@@ -92,7 +99,14 @@ public class Maze {
         scores[x][y] = score;
         return;
     }
+
     public int getScore(int x, int y) {
+        return scores[x][y];
+    }
+
+    public int getScore(Point p1) {
+        int x = p1.getX();
+        int y = p1.getY();
         return scores[x][y];
     }
 
@@ -119,7 +133,8 @@ public class Maze {
     public BlockType getBlock(Point point) {
         int i = point.getX();
         int j = point.getY();
-        if (i < 0 || i >= validSize || j < 0 || j >= validSize) {
+//        [1,1+validSize-1]
+        if (i <= 0 || i > validSize || j <= 0 || j > validSize) {
             return BlockType.WALL; // out of bounds
         } else {
             return board[i][j];

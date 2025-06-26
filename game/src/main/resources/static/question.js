@@ -1,4 +1,4 @@
-import {defineComponent, ref} from 'vue'
+import {defineComponent, ref} from './vue'
 import "./question.css"
 
 const question = defineComponent({

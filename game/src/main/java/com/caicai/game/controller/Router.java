@@ -1,18 +1,17 @@
 package com.caicai.game.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.caicai.game.Game;
 import com.caicai.game.common.Result;
 import com.caicai.game.conf.GameConf;
 import com.caicai.game.quiz.Question;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 
@@ -24,6 +23,7 @@ public class Router {
     Game game;
     @Autowired
     private GameConf gameConf;
+
     @RequestMapping("/game.html")
     public String maze(@RequestParam(name = "size", required = false) Integer size) {
         if (size != null && size >= 3 && size < 100) {
@@ -50,10 +50,18 @@ public class Router {
     public Result step() {
         return game.getNextPoint();
     }
+
     @ResponseBody
     @RequestMapping("/nextPointWithPath")
     public Result nextPointWithPath() {
         return game.nextPointWithPath();
+    }
+
+    @ResponseBody
+    @RequestMapping("/notify")
+    public Result notify(@RequestBody Map<String, Map<String, Object>> data) {
+        log.info("Received notify data: {}", data);
+        return game.reactToNotify(data);
     }
 
     @RequestMapping("/combat")

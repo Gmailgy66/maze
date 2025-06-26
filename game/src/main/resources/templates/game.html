@@ -8,95 +8,95 @@
 </head>
 
 <body>
-    <div id="app">
-        <h1>🏰 Maze Adventure 🏰</h1>
+<div id="app">
+    <h1>🏰 Maze Adventure 🏰</h1>
 
-        <form>
-            <label for="boardSize">Board Size:</label>
-            <input type="number" name="size" id="boardSize" placeholder="5-20" min="5" max="30" :value="validSize">
-        </form>
+    <form>
+        <label for="boardSize">Board Size:</label>
+        <input type="number" name="size" id="boardSize" placeholder="5-20" min="5" max="30" :value="validSize">
+    </form>
 
-        <div class="game-container">
-            <!-- Controls Section - now first in HTML and will appear on left -->
-            <div class="controls-section">
-                <!-- Game Info -->
-                <div class="game-info">
-                    <h3>📊 Game Stats</h3>
-                    <div class="stat">
-                        <span>Score:</span>
-                        <span id="score">0</span>
-                    </div>
-                    <div class="stat">
-                        <span>Level:</span>
-                        <span>1</span>
-                    </div>
-                    <div class="stat">
-                        <span>Steps:</span>
-                        <span id="steps">0</span>
-                    </div>
+    <div class="game-container">
+        <!-- Controls Section - now first in HTML and will appear on left -->
+        <div class="controls-section">
+            <!-- Game Info -->
+            <div class="game-info">
+                <h3>📊 Game Stats</h3>
+                <div class="stat">
+                    <span>Score:</span>
+                    <span id="score">0</span>
                 </div>
-
-                <!-- Game Controls -->
-                <div class="button-container">
-                    <button @click="handleNextStep">Next Step</button>
-                    <button @click="refresh">Refresh</button>
-                    <button @click="refresh">Restart</button>
+                <div class="stat">
+                    <span>Level:</span>
+                    <span>1</span>
                 </div>
-
-                <!-- Game Legend -->
-                <div class="game-legend">
-                    <h3>🗺️ Legend</h3>
-                    <div class="legend-item">
-                        <span class="legend-icon">🦸</span>
-                        <span>Hero</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-icon">🧱</span>
-                        <span>Wall</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-icon">🎯</span>
-                        <span>Goal</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-icon">🪙</span>
-                        <span>Gold</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-icon">💣</span>
-                        <span>Skill</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-icon">☠️</span>
-                        <span>Trap</span>
-                    </div>
+                <div class="stat">
+                    <span>Steps:</span>
+                    <span id="steps">0</span>
                 </div>
             </div>
 
-            <!-- Board Section - now second and will appear on right -->
-            <div class="board-section">
-                <table id="board">
-                    <tr v-for="(row, rowIndex) in board" :key="rowIndex">
-                        <td v-for="(block, colIndex) in row" :key="colIndex" :ref="`cell_${rowIndex}_${colIndex}`">
-                            <span v-if="block.toUpperCase() === 'WALL'">🧱</span>
-                            <span v-else-if="block === 'PATH'"> </span>
-                            <span v-else-if="block === 'HERO'">🦸</span>
-                            <span v-else-if="block === 'GOAL'">🎯</span>
-                            <span v-else-if="block === 'EXIT'" style="background-color: aquamarine">🔚</span>
-                            <span v-else-if="block === 'START'" style="background-color: pink">🏁</span>
-                            <span v-else-if="block === 'BOSS'" style="background-color: darkred">🦖</span>
-                            <span v-else-if="block === 'GOLD'">🪙</span>
-                            <span v-else-if="block === 'SKILL'">💣</span>
-                            <span v-else-if="block === 'TRAP'">☠️</span>
-                            <span v-else-if="block === 'LOCKER'">🔞</span>
-                            <span v-else>{{ block }}</span>
-                        </td>
-                    </tr>
-                </table>
+            <!-- Game Controls -->
+            <div class="button-container">
+                <button @click="handleNextStep">Next Step</button>
+                <button @click="refresh">Refresh</button>
+                <button @click="refresh">Restart</button>
+            </div>
+
+            <!-- Game Legend -->
+            <div class="game-legend">
+                <h3>🗺️ Legend</h3>
+                <div class="legend-item">
+                    <span class="legend-icon">🦸</span>
+                    <span>Hero</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">🧱</span>
+                    <span>Wall</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">🎯</span>
+                    <span>Goal</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">🪙</span>
+                    <span>Gold</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">💣</span>
+                    <span>Skill</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">☠️</span>
+                    <span>Trap</span>
+                </div>
             </div>
         </div>
+
+        <!-- Board Section - now second and will appear on right -->
+        <div class="board-section">
+            <table id="board">
+                <tr v-for="(row, rowIndex) in board" :key="rowIndex">
+                    <td v-for="(block, colIndex) in row" :key="colIndex" :ref="`cell_${rowIndex}_${colIndex}`">
+                        <span v-if="block.toUpperCase() === 'WALL'">🧱</span>
+                        <span v-else-if="block === 'PATH'"> </span>
+                        <span v-else-if="block === 'GOAL'">🎯</span>
+                        <span v-else-if="block === 'EXIT'" style="background-color: aquamarine">🔚</span>
+                        <span v-else-if="block === 'START'" style="background-color: pink">🏁</span>
+                        <span v-else-if="block === 'BOSS'" style="background-color: darkred">🦖</span>
+                        <span v-else-if="block === 'GOLD'">🪙</span>
+                        <span v-else-if="block === 'SKILL'">💣</span>
+                        <span v-else-if="block === 'TRAP'">☠️</span>
+                        <span v-else-if="block === 'LOCKER'">🔞</span>
+                        <span v-else>{{ block }}</span>
+                        <span v-if=" heroPos.y == colIndex && heroPos.x == rowIndex">🧙‍♂️</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <!-- ...existing script content... -->
+</div>
+<!-- ...existing script content... -->
 </body>
 <script src="./vue.js">
 </script>
