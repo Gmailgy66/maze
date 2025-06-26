@@ -59,7 +59,7 @@ public class Router {
 
     @ResponseBody
     @RequestMapping("/notify")
-    public Result notify(@RequestBody Map<String, Map<String, Object>> data) {
+    public Result notify(@RequestBody Map<String, Object> data) {
         log.info("Received notify data: {}", data);
         return game.reactToNotify(data);
     }
@@ -85,7 +85,7 @@ public class Router {
 
     // 待会删掉
     @RequestMapping("/test")
-    public String test(){
+    public String test() {
         return "test";
     }
 }

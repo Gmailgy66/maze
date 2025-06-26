@@ -4,8 +4,8 @@ import lombok.Getter;
 
 public enum BlockType {
     START("S"), EXIT("E"), WALL("#"), PATH("-"), TRAP("T"), GOLD("G", 10)
-    //        public static final int scorePlus = 10;
-    , LOCKER("L"), BOSS("B"), //    ENEMY("X"),
+    // public static final int scorePlus = 10;
+    , LOCKER("L"), BOSS("B"), // ENEMY("X"),
     SKILL("$");
 
     @Getter
@@ -20,6 +20,8 @@ public enum BlockType {
         }
     }
 
+    public static final int GOLD_SCORE = 5;
+    public static final int TRAP_SCORE = -3;
     @Getter
     final int score;
 

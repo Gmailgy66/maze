@@ -1,5 +1,5 @@
-import {defineComponent, ref} from './vue'
-import "./question.css"
+// import {defineComponent, ref} from './vue'
+// import "./question.css"
 
 // const question = defineComponent({
 //     name: 'question',
