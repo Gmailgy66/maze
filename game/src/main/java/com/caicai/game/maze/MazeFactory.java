@@ -185,7 +185,6 @@ public class MazeFactory {
                 fo.write(points[j].toString().getBytes());
                 fo.write('\n');
             }
-            System.out.println(maze);
 //            fo.write(maze.toString().getBytes());
             fo.write('\n');
             fo.close();

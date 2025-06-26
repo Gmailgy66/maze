@@ -1,4 +1,4 @@
-http://localhost:8080/init
+http://localhost:8080/game.html
 ${AnsiColor.BRIGHT_GREEN}$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 ${AnsiColor.BRIGHT_YELLOW}$$                                _.ooOoo._                               $$
 ${AnsiColor.BRIGHT_RED}$$                               o888888888o                              $$

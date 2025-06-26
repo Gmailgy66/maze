@@ -1,5 +1,7 @@
 package com.caicai.game.common;
 
+import java.util.Objects;
+
 import lombok.Data;
 
 @Data
@@ -20,13 +22,15 @@ public class Point implements Comparable<Point> {
         this(0, 0);
     }
 
-    public boolean equals(Point other) {
-        if (this == other) {
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other == null) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
+        Point other = (Point) obj;
         return this.x == other.x && this.y == other.y;
     }
 
@@ -38,6 +42,14 @@ public class Point implements Comparable<Point> {
     @Override
     public int compareTo(Point o) {
         return this.getX() <= o.getY() && this.getY() < o.getY() ? -1 : 1;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+        // Alternative implementations:
+        // return 31 * x + y;
+        // return x * 1000 + y; // if coordinates are small
     }
 
 }

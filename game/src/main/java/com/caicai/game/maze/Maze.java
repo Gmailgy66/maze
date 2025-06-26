@@ -43,9 +43,6 @@ public class Maze {
         this.vis = new boolean[size][size];
     }
 
-    void setScores(int[][] scores) {
-        this.scores = scores;
-    }
 
     void buildExtraInfo() {
         for (int i = 0; i < board.length; i++) {
@@ -89,9 +86,13 @@ public class Maze {
         board[x][y] = blockType;
     }
 
+
+    public void setScore(int x, int y, int score) {
+        scores[x][y] = score;
+        return;
+    }
     public int getScore(int x, int y) {
-//        return scores[x][y];
-        return 0;
+        return scores[x][y];
     }
 
     public String toString() {

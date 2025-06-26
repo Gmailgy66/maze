@@ -50,6 +50,11 @@ public class Router {
     public Result step() {
         return game.getNextPoint();
     }
+    @ResponseBody
+    @RequestMapping("/nextPointWithPath")
+    public Result nextPointWithPath() {
+        return game.nextPointWithPath();
+    }
 
     @RequestMapping("/combat")
     public String combat(Model model) {
