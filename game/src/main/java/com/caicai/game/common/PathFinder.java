@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import com.caicai.game.maze.BlockType;
 import org.springframework.stereotype.Component;
 
 import static com.caicai.game.maze.BlockType.WALL;
@@ -111,3 +112,4 @@ class Greedy implements PathFinder {
     }
 
 }
+

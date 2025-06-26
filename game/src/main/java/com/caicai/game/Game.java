@@ -1,10 +1,7 @@
 package com.caicai.game;
 
 import com.caicai.game.combat.Combat;
-import com.caicai.game.common.PathFinder;
-import com.caicai.game.common.Point;
-import com.caicai.game.common.Result;
-import com.caicai.game.common.ResultFactory;
+import com.caicai.game.common.*;
 import com.caicai.game.conf.GameConf;
 import com.caicai.game.maze.BlockType;
 import com.caicai.game.maze.Maze;
@@ -165,27 +162,10 @@ public class Game {
     }
 
     public Result nextPointWithPath() {
-        Point nxtPoint = pathFinder.getNextPoint(maze, curPos);
-        List<Point> path = pathFinder.getBestWayByAStar(maze, curPos, nxtPoint);
-        Result res = resultFactory.ok()
-                                  .put("path", path)
-                                  .put("target", nxtPoint);
-        path.forEach(p -> {
-            BlockType block = maze.getBlock(p);
-            switch (block) {
-                case GOLD -> maze.setBlock(p, BlockType.PATH);
-                case SKILL -> maze.setBlock(p, BlockType.PATH);
-                case BOSS -> {
-                    res.put("bossOnPath", true)
-                       .put("bossPosition", p)
-                       .put("bossInfo", maze.getBoss());
-                    maze.setBlock(p, PATH);
-                }
-                // the score should be calculated in the front end
-            }
-        });
-        curPos = nxtPoint;
-        return res;
+        PathSolve solver = new PathSolve();
+        var path = solver.solve(maze);
+        System.out.println(path);
+        return resultFactory.ok().put("path", path);
     }
 
     // the data should contains the actually pos is
