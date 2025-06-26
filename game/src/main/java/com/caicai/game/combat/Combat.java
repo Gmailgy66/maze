@@ -21,6 +21,7 @@ public class Combat {
 //    }
 
     public String next () {
+        String info = "";
         // 玩家回合
         int pos = -1;
         for (int i = 0; i < role.skills.size(); i++) {
@@ -31,23 +32,26 @@ public class Combat {
                 role.skills.get(i).nowCd--;
             }
         }
+        info += String.format("玩家造成了%d点伤害\n", role.skills.get(pos).damage);
         enemy.hp -= role.skills.get(pos).damage;
         role.skills.get(pos).nowCd = role.skills.get(pos).cd;
         if (enemy.hp <= 0) {
             // 战斗结束
-            return "You win!";
+            info += "you win!\n";
+            return info;
         }
 
         // 敌人回合
         if (enemy.powerAttack.nowCd == 0){
             role.score -= enemy.powerAttack.damage;
             enemy.powerAttack.nowCd = enemy.powerAttack.cd;
+            info += String.format("敌人造成了%d点伤害\n", enemy.powerAttack.damage);
         }
         else {
             role.score -= enemy.attack.damage;
+            info += String.format("敌人造成了%d点伤害\n", enemy.attack.damage);
         }
-
-        return String.format("role: %d, enemy: %d\n", role.score, enemy.hp);
+        return info;
     }
 
 }

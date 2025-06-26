@@ -66,7 +66,8 @@ public class Router {
 
     @RequestMapping("/combat")
     public String combat(Model model) {
-        model.addAttribute("result", game.openCombat());
+//        model.addAttribute("result", game.openCombat());
+        game.openCombat();
         return "combat";
     }
 
@@ -82,4 +83,9 @@ public class Router {
         return new Question().start();
     }
 
+    // 待会删掉
+    @RequestMapping("/test")
+    public String test(){
+        return "test";
+    }
 }

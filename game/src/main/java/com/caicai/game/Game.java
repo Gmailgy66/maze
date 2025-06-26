@@ -112,6 +112,7 @@ public class Game {
         return handleBlock(this.curPos);
     }
 
+
     public Result nextTurn() {
         log.info("nextTurn");
         var result = resultFactory.ok();
