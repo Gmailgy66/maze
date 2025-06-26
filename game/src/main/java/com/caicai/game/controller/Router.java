@@ -70,4 +70,9 @@ public class Router {
         return new Question().start();
     }
 
+    // 待会删掉
+    @RequestMapping("/test")
+    public String test(){
+        return "test";
+    }
 }
