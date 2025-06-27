@@ -7,6 +7,7 @@ import com.caicai.game.maze.BlockType;
 import com.caicai.game.maze.Maze;
 import com.caicai.game.maze.MazeFactory;
 import com.caicai.game.role.Hero;
+import com.caicai.game.role.Skill;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static com.caicai.game.maze.BlockType.GOLD;
 import static com.caicai.game.maze.BlockType.PATH;
@@ -120,6 +122,13 @@ public class Game {
     //
     public Result G() {
         hero.setScore(hero.getScore() + GOLD.getScore());
+        Random random = new Random();
+        int a = random.nextInt(100);
+        if(a <= 30){
+            if(hero.skills.size() < 5){
+                hero.skills.add(Skill.randomSkill());
+            }
+        }
         return resultFactory.ok().put("type", "GOLD");
 
     }
