@@ -21,10 +21,10 @@ import java.util.Random;
 @Component
 @Slf4j
 public class Game {
-    Maze maze;
+    public Maze maze;
     Combat combat;
-    Hero hero;
-    Point curPos;
+    public Hero hero;
+    public Point curPos;
     ResultFactory resultFactory;
 
     @Autowired
@@ -34,7 +34,7 @@ public class Game {
     @Autowired
     private GameConf gameConf;
 
-    Map<String, Object> baseFields = new HashMap<>();
+    public Map<String, Object> baseFields = new HashMap<>();
 
     Game() {
         resultFactory = new ResultFactory(baseFields);

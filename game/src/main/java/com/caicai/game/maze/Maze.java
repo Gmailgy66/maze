@@ -16,7 +16,7 @@ public class Maze {
     private Boss boss;
     private Point BossPoint;
 
-    private BlockType[][] board;
+    public BlockType[][] board;
     private boolean[][] vis;
     private String title = "吴哥窟";
     private Set<Point> gold = new HashSet<>();
