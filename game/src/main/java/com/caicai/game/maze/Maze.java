@@ -35,7 +35,7 @@ public class Maze {
     public static final int SKILL_SCORE = 1;
 
     // final Point BOSS;
-    Maze(int size) {
+    public Maze(int size) {
         this.scores = new int[size + 2][size + 2];
         this.validSize = size;
         this.boardSize = size + 2; // +2 for walls

@@ -1,9 +1,11 @@
 package com.caicai.game.controller;
 
 import com.caicai.game.Game;
+import com.caicai.game.common.Point;
 import com.caicai.game.common.Result;
 import com.caicai.game.conf.GameConf;
 import com.caicai.game.maze.BlockType;
+import com.caicai.game.maze.Maze;
 import com.caicai.game.quiz.Question;
 import com.caicai.game.role.Hero;
 import lombok.extern.slf4j.Slf4j;
@@ -59,26 +61,29 @@ public class Router {
 
         int rows = mazeJson.length();
         int cols = mazeJson.getJSONArray(0).length();
-        game.maze.board = new BlockType[rows][cols];
+        game.maze = new Maze(rows);
 
         for (int i = 0; i < rows; i++) {
             JSONArray row = mazeJson.getJSONArray(i);
             for (int j = 0; j < cols; j++) {
                 String t = row.getString(j);
                 if (t.equals("#")) {
-                    game.maze.board[i][j] = BlockType.WALL;
+                    game.maze.board[i+1][j+1] = BlockType.WALL;
                 } else if (t.equals("S")) {
-                    game.maze.board[i][j] = BlockType.START;
+                    game.maze.setSTART(new Point(i + 1, j + 1));
+                    game.maze.board[i+1][j+1] = BlockType.START;
                 } else if (t.equals("G")) {
-                    game.maze.board[i][j] = BlockType.GOLD;
+                    game.maze.board[i+1][j+1] = BlockType.GOLD;
                 } else if (t.equals("E")) {
-                    game.maze.board[i][j] = BlockType.EXIT;
+                    game.maze.setEXIT(new Point(i + 1, j + 1));
+                    game.maze.board[i+1][j+1] = BlockType.EXIT;
                 } else if (t.equals("T")) {
-                    game.maze.board[i][j] = BlockType.TRAP;
+                    game.maze.board[i+1][j+1] = BlockType.TRAP;
                 } else if (t.equals("L")) {
-                    game.maze.board[i][j] = BlockType.LOCKER;
+                    game.maze.setLOCKER(new Point(i + 1, j + 1));
+                    game.maze.board[i+1][j+1] = BlockType.LOCKER;
                 } else {
-                    game.maze.board[i][j] = BlockType.PATH;
+                    game.maze.board[i+1][j+1] = BlockType.PATH;
                 }
             }
         }
