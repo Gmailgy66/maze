@@ -43,12 +43,13 @@ const vm = new Vue({
         currentLevel: 1,
         stepCnt: 0,
         boardCopy: [],
-        // Auto-play functionality
+        // Auto-play functionali
         isAutoPlaying: false,
         autoPlaySpeed: 50, // milliseconds between steps
         autoPlayTimer: null,
         animationDuration: 150, // milliseconds for movement animation (reduced from 300)
-        isAnimating: false // Flag to prevent overlapping animations
+        isAnimating: false, // Flag to prevent overlapping animations,
+        selectedFile: null
     },
 
     created() {
@@ -450,7 +451,58 @@ const vm = new Vue({
                 }
             }, totalDelay);
         },
+        onFileSelected(event) {
+            this.selectedFile = event.target.files[0];
+            console.log("File selected:", this.selectedFile?.name);
+        },
 
+        async uploadMazeFile(useDefault = false) {
+            // if use default is true, skip file validation
+            if (!useDefault && !this.selectedFile) {
+                this.error = "Please select a file to upload";
+                return;
+            }
+
+            this.isLoading = true;
+            this.error = null;
+
+            try {
+                const formData = new FormData();
+                
+                // Only append file if not using default
+                if (!useDefault && this.selectedFile) {
+                    formData.append('mazeFile', this.selectedFile);
+                }
+                
+                const endpoint = useDefault ? '/loadMaze' : '/uploadMaze';
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: useDefault ? null : formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${useDefault ? 'Load' : 'Upload'} failed: ${response.status} ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                console.log(`Maze ${useDefault ? 'loaded' : 'uploaded'} successfully:`, result);
+
+                // Clear the file input only if we uploaded a file
+                if (!useDefault) {
+                    this.selectedFile = null;
+                    this.$refs.mazeFileInput.value = '';
+                }
+
+                this.flushData();
+                await this.getCurBoardInfo();
+
+            } catch (error) {
+                console.error(`Failed to ${useDefault ? 'load default' : 'upload'} maze file:`, error);
+                this.error = `Failed to ${useDefault ? 'load default' : 'upload'} maze file: ${error.message}`;
+            } finally {
+                this.isLoading = false;
+            }
+        },
         stopAutoPlay() {
             this.isAutoPlaying = false;
             if (this.autoPlayTimer) {

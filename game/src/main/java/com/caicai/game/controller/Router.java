@@ -1,27 +1,21 @@
 package com.caicai.game.controller;
 
 import com.caicai.game.Game;
-import com.caicai.game.common.Point;
 import com.caicai.game.common.Result;
 import com.caicai.game.conf.GameConf;
-import com.caicai.game.maze.BlockType;
-import com.caicai.game.maze.Maze;
 import com.caicai.game.quiz.Question;
-import com.caicai.game.role.Hero;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Scanner;
 
 @Slf4j
 @Controller
@@ -47,63 +41,33 @@ public class Router {
         // return game.init();
     }
 
+    @PostMapping("/uploadMaze")
+    @ResponseBody
+    public Result uploadMaze(@RequestParam("mazeFile") MultipartFile mazeFile) throws Exception {
+        if (mazeFile.isEmpty()) {
+            return Result.fail().put("msg", "File is empty");
+        }
+        return game.init(mazeFile.getInputStream());
+
+    }
+
+    @ResponseBody
     @RequestMapping("/loadMaze")
-    public String loadMaze() {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("maze.json");
+    public Result loadMaze() {
+        InputStream is = this.getClass()
+                             .getClassLoader()
+                             .getResourceAsStream("maze.json");
         if (is == null) {
             System.out.println("open file failed");
             throw new RuntimeException("failed");
         }
-
-        String jsonStr = new Scanner(is, StandardCharsets.UTF_8).useDelimiter("\\A").next();
-        JSONObject obj = new JSONObject(jsonStr);
-        JSONArray mazeJson = obj.getJSONArray("maze");
-
-        int rows = mazeJson.length();
-        int cols = mazeJson.getJSONArray(0).length();
-        game.maze = new Maze(rows);
-
-        for (int i = 0; i < rows; i++) {
-            JSONArray row = mazeJson.getJSONArray(i);
-            for (int j = 0; j < cols; j++) {
-                String t = row.getString(j);
-                if (t.equals("#")) {
-                    game.maze.board[i+1][j+1] = BlockType.WALL;
-                } else if (t.equals("S")) {
-                    game.maze.setSTART(new Point(i + 1, j + 1));
-                    game.maze.board[i+1][j+1] = BlockType.START;
-                } else if (t.equals("G")) {
-                    game.maze.board[i+1][j+1] = BlockType.GOLD;
-                } else if (t.equals("E")) {
-                    game.maze.setEXIT(new Point(i + 1, j + 1));
-                    game.maze.board[i+1][j+1] = BlockType.EXIT;
-                } else if (t.equals("T")) {
-                    game.maze.board[i+1][j+1] = BlockType.TRAP;
-                } else if (t.equals("L")) {
-                    game.maze.setLOCKER(new Point(i + 1, j + 1));
-                    game.maze.board[i+1][j+1] = BlockType.LOCKER;
-                } else {
-                    game.maze.board[i+1][j+1] = BlockType.PATH;
-                }
-            }
-        }
-        game.hero = new Hero();
-        game.curPos = game.maze.getSTART();
-        game.baseFields.put("hero", game.hero);
-        game.baseFields.put("curPos", game.curPos);
-        return "game";
+        return game.init(is);
     }
 
     @ResponseBody
     @RequestMapping("/fullUpdate")
     public Result fullUpdate() {
         return game.fullInfo();
-    }
-
-    @ResponseBody
-    @RequestMapping("/nextStep")
-    public Result step() {
-        return game.getNextPoint();
     }
 
     @ResponseBody
@@ -114,7 +78,7 @@ public class Router {
 
     @RequestMapping("/combat")
     public String combat(Model model) {
-//        model.addAttribute("result", game.openCombat());
+        // model.addAttribute("result", game.openCombat());
         game.openCombat();
         return "combat";
     }

@@ -25,6 +25,16 @@
             <button type="submit" :disabled="isLoading">Update Size</button>
         </form>
 
+        <form @submit.prevent="uploadMazeFile(false)" enctype="multipart/form-data">
+            <label for="mazeFile">Upload Maze File:</label>
+            <input type="file" id="mazeFile" ref="mazeFileInput" accept=".txt,.json,.maze" @change="onFileSelected">
+            <button type="submit" :disabled="isLoading || !selectedFile">Upload Maze</button>
+        </form>
+
+        <div class="default-maze-section">
+            <button @click="uploadMazeFile(true)" :disabled="isLoading">Use Default Maze</button>
+        </div>
+
         <div class="game-container">
             <!-- Controls Section -->
             <div class="controls-section">
