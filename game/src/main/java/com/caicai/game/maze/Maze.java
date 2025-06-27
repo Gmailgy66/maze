@@ -32,6 +32,7 @@ public class Maze {
     private int[][] scores;
     public static final int GOLD_SCORE = 5;
     public static final int TRAP_SCORE = -3;
+    public static final int SKILL_SCORE = 1;
 
     // final Point BOSS;
     Maze(int size) {
