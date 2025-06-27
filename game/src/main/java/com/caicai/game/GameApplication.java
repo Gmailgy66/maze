@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,})
 @EnableConfigurationProperties
-public class GameApplication {
+public class GameApplication  {
 
     public static void main(String[] args) {
         SpringApplication.run(GameApplication.class, args);

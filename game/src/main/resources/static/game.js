@@ -60,7 +60,7 @@ const vm = new Vue({
             this.isLoading = true;
             this.error = null;
             try {
-                const response = await fetch("http://localhost:8080/fullUpdate");
+                const response = await fetch("/fullUpdate");
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -178,7 +178,7 @@ const vm = new Vue({
                 // this will direct flush the full board
                 // just notify the server to update the board size
                 // the udpate of info need a more request
-                const response = await fetch(`http://localhost:8080/game.html?size=${this.validSize}`, {
+                const response = await fetch(`/game.html?size=${this.validSize}`, {
                     method: 'GET'
                 });
                 if (response.ok) {
@@ -213,7 +213,7 @@ const vm = new Vue({
             this.isLoading = true;
             this.error = null;
             try {
-                const response = await fetch("http://localhost:8080/nextPointWithPath");
+                const response = await fetch("/nextPointWithPath");
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -287,6 +287,7 @@ const vm = new Vue({
             this.skillsCollected = 0;
             this.error = null;
             this.curInd = -1;
+            this.board;
             this.stopAutoPlay(); // Stop auto-play when resetting
             this.clearOldStyle();
             this.getCurBoardInfo();
