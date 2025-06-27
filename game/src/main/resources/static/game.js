@@ -16,13 +16,21 @@ const vm = new Vue({
             'TRAP': '☠️',
             'EXIT': '🔚',
             'BOSS': '🦖',
-            'LOCKER': '🔞'
+            'LOCKER': '🔞',
+            'GOLD_COLLECTED': '💰',  // Mask for collected gold
+            'SKILL_COLLECTED': '⚡',  // Mask for collected skill
+            'TRAP_TRIGGERED': '💀'   // Mask for triggered trap
         },
         heroPos: {
             x: 0,
             y: 0
         },
         score: 0,
+        scoreHistory: [], // Track score changes for display
+        collectedItems: new Set(), // Track collected items by position key
+        goldCollected: 0,
+        trapsTriggered: 0,
+        skillsCollected: 0,
         skills: [],
         boss: [],
         path: [],
@@ -37,7 +45,7 @@ const vm = new Vue({
         boardCopy: [],
         // Auto-play functionality
         isAutoPlaying: false,
-        autoPlaySpeed: 1000, // milliseconds between steps
+        autoPlaySpeed: 50, // milliseconds between steps
         autoPlayTimer: null,
         animationDuration: 150, // milliseconds for movement animation (reduced from 300)
         isAnimating: false // Flag to prevent overlapping animations
@@ -79,6 +87,87 @@ const vm = new Vue({
                 this.isLoading = false;
             }
         },
+
+        // Score and item collection methods
+        getPositionKey(x, y) {
+            return `${x}_${y}`;
+        },
+
+        calculateScoreChange(cellType) {
+            switch (cellType) {
+                case 'GOLD':
+                    return 5;
+                case 'TRAP':
+                    return -3;
+                case 'SKILL':
+                    return 1; // Small bonus for collecting skills
+                default:
+                    return 0;
+            }
+        },
+
+        addScoreChange(amount, reason) {
+            this.score += amount;
+            this.scoreHistory.push({
+                amount: amount,
+                reason: reason,
+                timestamp: Date.now()
+            });
+
+            // Keep only last 10 score changes for performance
+            if (this.scoreHistory.length > 10) {
+                this.scoreHistory = this.scoreHistory.slice(-10);
+            }
+        },
+
+        processItemCollection(x, y) {
+            const posKey = this.getPositionKey(x, y);
+            const cellType = this.board[x][y];
+
+            // Skip if already collected
+            if (this.collectedItems.has(posKey)) {
+                return;
+            }
+
+            let scoreChange = 0;
+            let newCellType = cellType;
+            let reason = '';
+
+            switch (cellType) {
+                case 'GOLD':
+                    scoreChange = 5;
+                    newCellType = 'GOLD_COLLECTED';
+                    reason = 'Gold collected';
+                    this.goldCollected++;
+                    break;
+                case 'TRAP':
+                    scoreChange = -3;
+                    newCellType = 'TRAP_TRIGGERED';
+                    reason = 'Trap triggered';
+                    this.trapsTriggered++;
+                    break;
+                case 'SKILL':
+                    scoreChange = 1;
+                    newCellType = 'SKILL_COLLECTED';
+                    reason = 'Skill collected';
+                    this.skillsCollected++;
+                    break;
+                default:
+                    return; // No processing needed for other cell types
+            }
+
+            // Mark as collected
+            this.collectedItems.add(posKey);
+
+            // Update the board with masked icon
+            this.board[x][y] = newCellType;
+
+            // Add score change
+            if (scoreChange !== 0) {
+                this.addScoreChange(scoreChange, reason);
+            }
+        },
+
         async updateBoardSize() {
             if (this.validSize < 5 || this.validSize > 99) {
                 this.error = "Board size must be between 5 and 99";
@@ -118,7 +207,6 @@ const vm = new Vue({
             const cellRef = this.$refs[`cell_${x}_${y}`];
             return cellRef && cellRef[0] ? cellRef[0] : null;
         },
-
 
         async handleSolve() {
             console.log("Starting to solve the maze...");
@@ -173,20 +261,30 @@ const vm = new Vue({
                 y >= 0 && y < this.board[0].length;
         },
 
-
         flushData() {
             this.path = [];
             this.segments = [];
             this.steps = 0;
             this.score = 0;
+            this.scoreHistory = [];
+            this.collectedItems.clear();
+            this.goldCollected = 0;
+            this.trapsTriggered = 0;
+            this.skillsCollected = 0;
             this.error = null;
             this.curInd = -1;
             this.stopAutoPlay(); // Stop auto-play when flushing
             this.clearOldStyle();
         },
+
         resetGame() {
             this.steps = 0;
             this.score = 0;
+            this.scoreHistory = [];
+            this.collectedItems.clear();
+            this.goldCollected = 0;
+            this.trapsTriggered = 0;
+            this.skillsCollected = 0;
             this.error = null;
             this.curInd = -1;
             this.stopAutoPlay(); // Stop auto-play when resetting
@@ -230,9 +328,9 @@ const vm = new Vue({
             segment.forEach((point, pointIndex) => {
                 setTimeout(() => {
                     this.stepCnt++;
-                    if (this.board[point.x][point.y] === "GOLD") {
-                        this.board[point.x][point.y] = "PATH";
-                    }
+
+                    // Process item collection BEFORE updating position
+                    this.processItemCollection(point.x, point.y);
 
                     // Clear previous hero position animation
                     const prevCell = this.getCell(this.heroPos.x, this.heroPos.y);
@@ -401,6 +499,25 @@ const vm = new Vue({
         autoPlayProgress() {
             if (this.segments.length === 0) return 0;
             return Math.round(((this.curInd + 1) / this.segments.length) * 100);
+        },
+
+        totalItemsCollected() {
+            return this.collectedItems.size;
+        },
+
+        recentScoreChanges() {
+            // Return last 3 score changes for display
+            return this.scoreHistory.slice(-3).reverse();
+        },
+
+        gameStats() {
+            return {
+                score: this.score,
+                goldCollected: this.goldCollected,
+                trapsTriggered: this.trapsTriggered,
+                skillsCollected: this.skillsCollected,
+                totalSteps: this.stepCnt
+            };
         }
     },
 

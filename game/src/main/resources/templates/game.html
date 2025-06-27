@@ -32,23 +32,35 @@
                 <div class="game-info">
                     <h3>📊 Game Stats</h3>
                     <div class="stat">
-                        <span>Score:</span>
+                        <span>🏆 Score:</span>
                         <span id="score">{{ score }}</span>
                     </div>
                     <div class="stat">
-                        <span>Level:</span>
+                        <span>💰 Gold Collected:</span>
+                        <span>{{ goldCollected }}</span>
+                    </div>
+                    <div class="stat">
+                        <span>⚡ Skills Collected:</span>
+                        <span>{{ skillsCollected }}</span>
+                    </div>
+                    <div class="stat">
+                        <span>💀 Traps Triggered:</span>
+                        <span>{{ trapsTriggered }}</span>
+                    </div>
+                    <div class="stat">
+                        <span>🎮 Level:</span>
                         <span>{{ currentLevel }}</span>
                     </div>
                     <div class="stat">
-                        <span>Steps:</span>
-                        <span id="steps">{{ steps }}</span>
+                        <span>👣 Steps:</span>
+                        <span id="steps">{{ stepCnt }}</span>
                     </div>
                     <div class="stat">
-                        <span>Path Length:</span>
+                        <span>📏 Path Length:</span>
                         <span>{{ totalPathLength }}</span>
                     </div>
                     <div class="stat">
-                        <span>Segments:</span>
+                        <span>🧩 Segments:</span>
                         <span>{{ segments.length }}</span>
                     </div>
                 </div>
@@ -119,12 +131,24 @@
                         <span>Gold</span>
                     </div>
                     <div class="legend-item">
+                        <span class="legend-icon">💰</span>
+                        <span>Gold Collected</span>
+                    </div>
+                    <div class="legend-item">
                         <span class="legend-icon">💣</span>
                         <span>Skill</span>
                     </div>
                     <div class="legend-item">
+                        <span class="legend-icon">⚡</span>
+                        <span>Skill Collected</span>
+                    </div>
+                    <div class="legend-item">
                         <span class="legend-icon">☠️</span>
                         <span>Trap</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-icon">💀</span>
+                        <span>Trap Triggered</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-icon">🏁</span>
@@ -161,8 +185,11 @@
                             <span v-else-if="block === 'START'">🏁</span>
                             <span v-else-if="block === 'BOSS'">🦖</span>
                             <span v-else-if="block === 'GOLD'">🪙</span>
+                            <span v-else-if="block === 'GOLD_COLLECTED'">💰</span>
                             <span v-else-if="block === 'SKILL'">💣</span>
+                            <span v-else-if="block === 'SKILL_COLLECTED'">⚡</span>
                             <span v-else-if="block === 'TRAP'">☠️</span>
+                            <span v-else-if="block === 'TRAP_TRIGGERED'">💀</span>
                             <span v-else-if="block === 'LOCKER'">🔞</span>
                             <span v-else>{{ block || '?' }}</span>
                             <!-- Hero overlay -->
