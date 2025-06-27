@@ -3,7 +3,6 @@ package com.caicai.game;
 import com.caicai.game.combat.Combat;
 import com.caicai.game.common.*;
 import com.caicai.game.conf.GameConf;
-import com.caicai.game.maze.BlockType;
 import com.caicai.game.maze.Maze;
 import com.caicai.game.maze.MazeFactory;
 import com.caicai.game.role.Hero;
@@ -19,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static com.caicai.game.maze.BlockType.*;
-
 @Component
 @Slf4j
 public class Game {
@@ -32,7 +29,7 @@ public class Game {
 
     @Autowired
     MazeFactory mazeFactory;
-    @Resource(name = "greedy")
+    @Resource(name = "pathSolve")
     PathFinder pathFinder;
     @Autowired
     private GameConf gameConf;
@@ -162,15 +159,15 @@ public class Game {
      */
     private Result Sk() {
         hero.setScore(hero.getScore() + maze.SKILL_SCORE);
-        if(hero.skills.size() < 5) {
+        if (hero.skills.size() < 5) {
             hero.skills.add(Skill.randomSkill());
         }
         return resultFactory.ok().put("type", "SKILL");
     }
 
-    public Result nextPointWithPath() {
-        PathSolve solver = new PathSolve();
-        var path = solver.solve(maze);
+    public Result getFullPath() {
+        PathSolve pathSolve = new PathSolve();
+        List<Point> path = pathSolve.solve(maze);
         System.out.println(path);
         return resultFactory.ok().put("path", path);
     }

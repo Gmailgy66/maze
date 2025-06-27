@@ -21,7 +21,7 @@
 
         <form @submit.prevent="updateBoardSize">
             <label for="boardSize">Board Size:</label>
-            <input type="number" name="size" id="boardSize" placeholder="5-30" min="5" max="30" v-model="validSize">
+            <input type="number" name="size" id="boardSize" placeholder="5-99" min="5" max="99" v-model="validSize">
             <button type="submit" :disabled="isLoading">Update Size</button>
         </form>
 
@@ -61,12 +61,42 @@
                     <button @click="stepOne" :disabled="isLoading || segments.length === 0">
                         Step Forward
                     </button>
-                    <button @click="refresh" :disabled="isLoading">
-                        Refresh
-                    </button>
                     <button @click="resetGame" :disabled="isLoading">
                         Reset Game
                     </button>
+                    <button @click="updateBoardSize" :disabled="isLoading">
+                        New Game
+                    </button>
+                </div>
+
+                <!-- Auto-Play Controls -->
+                <div class="auto-play-controls">
+                    <h3>🎮 Auto-Play Controls</h3>
+                    <div class="button-container">
+                        <button @click="toggleAutoPlay" :disabled="segments.length === 0">
+                            {{ isAutoPlaying ? '⏸️ Pause' : '▶️ Play' }}
+                        </button>
+                        <button @click="restartAutoPlay" :disabled="segments.length === 0">
+                            🔄 Restart
+                        </button>
+                    </div>
+
+                    <div class="speed-control">
+                        <label for="speed-slider">Speed: {{ 2100 - autoPlaySpeed }}ms</label>
+                        <input type="range" id="speed-slider" min="50" max="2000" step="50" :value="autoPlaySpeed"
+                            @input="setAutoPlaySpeed($event.target.value)" />
+                        <div class="speed-labels">
+                            <span>Ultra Fast</span>
+                            <span>Slow</span>
+                        </div>
+                    </div>
+
+                    <div v-if="segments.length > 0" class="progress-bar">
+                        <div class="progress-label">Progress: {{ autoPlayProgress }}%</div>
+                        <div class="progress-track">
+                            <div class="progress-fill" :style="{ width: autoPlayProgress + '%' }"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Game Legend -->
@@ -122,10 +152,10 @@
                 </div>
                 <table v-else id="board">
                     <tr v-for="(row, rowIndex) in board" :key="rowIndex">
-                        <td v-for="(block, colIndex) in row" :key="colIndex" :ref="`cell_${rowIndex}_${colIndex}`"
-                            :class="getCellClass(rowIndex, colIndex)">
+                        <!--                    :class="getCellClass(rowIndex, colIndex)-->
+                        <td v-for="(block, colIndex) in row" :key="colIndex" :ref="`cell_${rowIndex}_${colIndex}`">
                             <span v-if="block && block.toUpperCase() === 'WALL'">🧱</span>
-                            <span v-else-if="block === 'PATH'">  </span>
+                            <span v-else-if="block === 'PATH'"> </span>
                             <span v-else-if="block === 'GOAL'">🎯</span>
                             <span v-else-if="block === 'EXIT'">🔚</span>
                             <span v-else-if="block === 'START'">🏁</span>

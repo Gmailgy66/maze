@@ -34,13 +34,8 @@ const vm = new Vue({
         curInd: -1,
         currentLevel: 1,
         stepCnt: 0,
-        boardCopy: [],
-        // Auto-play functionality
-        isAutoPlaying: false,
-        autoPlaySpeed: 1000, // milliseconds between steps
-        autoPlayTimer: null,
-        animationDuration: 150, // milliseconds for movement animation (reduced from 300)
-        isAnimating: false // Flag to prevent overlapping animations
+        boardCopy: []
+
     },
 
     created() {
@@ -181,7 +176,6 @@ const vm = new Vue({
             this.score = 0;
             this.error = null;
             this.curInd = -1;
-            this.stopAutoPlay(); // Stop auto-play when flushing
             this.clearOldStyle();
         },
         resetGame() {
@@ -189,9 +183,9 @@ const vm = new Vue({
             this.score = 0;
             this.error = null;
             this.curInd = -1;
-            this.stopAutoPlay(); // Stop auto-play when resetting
             this.clearOldStyle();
             this.getCurBoardInfo();
+
         },
 
         clearOldStyle() {
@@ -201,7 +195,7 @@ const vm = new Vue({
                     const cell = this.getCell(x, y);
                     if (cell) {
                         cell.style.backgroundColor = '';
-                        cell.classList.remove('hero-moving', 'path-highlight');
+                        // cell.innerText = '';
                     }
                 });
             });
@@ -212,57 +206,23 @@ const vm = new Vue({
                 console.warn("Invalid segment index:", segmentIndex);
                 return;
             }
-
-            // Prevent multiple segments from playing simultaneously
-            if (this.isAnimating) {
-                console.warn("Animation already in progress, skipping...");
-                return;
-            }
-
-            this.isAnimating = true;
+            // create a random color for the segment highlight
             const randomColor = `hsl(${Math.random() * 360}, 100%, 75%)`;
-            const segment = this.segments[segmentIndex];
-
-            // Calculate total animation time for this segment (faster timing)
-            const segmentAnimationTime = segment.length * (this.animationDuration / 3); // Reduced from /2
-
-            // Animate through each point in the segment
-            segment.forEach((point, pointIndex) => {
-                setTimeout(() => {
-                    this.stepCnt++;
-                    if (this.board[point.x][point.y] === "GOLD") {
-                        this.board[point.x][point.y] = "PATH";
-                    }
-
-                    // Clear previous hero position animation
-                    const prevCell = this.getCell(this.heroPos.x, this.heroPos.y);
-                    if (prevCell) {
-                        prevCell.classList.remove('hero-moving');
-                    }
-
-                    // Update hero position
-                    this.heroPos = { x: point.x, y: point.y };
-
-                    // Add movement animation to new position
-                    const cell = this.getCell(point.x, point.y);
-                    if (cell) {
-                        cell.style.backgroundColor = randomColor;
-                        cell.classList.add('hero-moving', 'path-highlight');
-
-                        // Remove animation class after animation completes
-                        setTimeout(() => {
-                            cell.classList.remove('hero-moving');
-                        }, this.animationDuration);
-                    }
-                }, pointIndex * (this.animationDuration / 3)); // Reduced from /2
+            this.segments[segmentIndex].forEach(point => {
+                this.stepCnt++;
+                if (this.board[point.x][point.y] === "GOLD") {
+                    this.board[point.x][point.y] = "PATH"; // Change GOLD to PATH for highlighting
+                }
+                this.heroPos = { x: point.x, y: point.y }; // Update hero position to current segment point
+                const cell = this.getCell(point.x, point.y);
+                if (cell) {
+                    // cell.style.backgroundColor = 'yellow';
+                    cell.style.backgroundColor = randomColor;
+                    // cell.style.border = '2px solid orange';
+                    // cell.innerText = this.stepCnt;
+                }
             });
-
-            // Reset animation flag after segment completes
-            setTimeout(() => {
-                this.isAnimating = false;
-            }, segmentAnimationTime + this.animationDuration);
         },
-
         clearSegmentHighlight(segmentIndex) {
             return;
             if (segmentIndex < 0 || segmentIndex >= this.segments.length) {
@@ -285,104 +245,20 @@ const vm = new Vue({
                 return;
             }
 
-            // Prevent stepping if already animating
-            if (this.isAnimating) {
-                console.warn("Animation in progress, please wait...");
-                return;
-            }
-
             // Clear previous highlight
             if (this.curInd >= 0) {
                 this.clearSegmentHighlight(this.curInd);
             }
-
             // Move to next segment
-            if (this.curInd >= this.segments.length - 1) {
-                if (this.isAutoPlaying) {
-                    this.stopAutoPlay(); // Stop auto-play when reaching the end
-                }
+            if (this.curInd >= this.segments.length) {
                 return;
+                this.curInd = 0; // Loop back to start
             }
 
             this.curInd++;
             this.highlightSegment(this.curInd);
+            // console.log(`Stepped to segment ${this.curInd + 1} of ${this.segments.length}`);
             console.log(`Stepped to segment ${this.curInd + 1} of ${this.segments.length}`, this.segments[this.curInd]);
-        },
-
-        // Auto-play methods
-        startAutoPlay() {
-            if (this.segments.length === 0) {
-                this.error = "No path segments available. Solve the maze first.";
-                return;
-            }
-
-            if (this.isAnimating) {
-                console.warn("Cannot start auto-play while animation is in progress");
-                return;
-            }
-
-            this.isAutoPlaying = true;
-            this.scheduleNextStep();
-        },
-
-        scheduleNextStep() {
-            if (!this.isAutoPlaying) return;
-
-            // Calculate delay: base speed + time for current segment animation
-            const currentSegment = this.segments[this.curInd + 1];
-            const segmentAnimationTime = currentSegment ?
-                currentSegment.length * (this.animationDuration / 3) : 0; // Reduced from /2
-
-            const totalDelay = this.autoPlaySpeed + segmentAnimationTime;
-
-            this.autoPlayTimer = setTimeout(() => {
-                if (!this.isAutoPlaying) return;
-
-                if (this.curInd >= this.segments.length - 1) {
-                    this.stopAutoPlay();
-                    return;
-                }
-
-                this.stepOne();
-
-                // Schedule next step if still auto-playing
-                if (this.isAutoPlaying) {
-                    this.scheduleNextStep();
-                }
-            }, totalDelay);
-        },
-
-        stopAutoPlay() {
-            this.isAutoPlaying = false;
-            if (this.autoPlayTimer) {
-                clearTimeout(this.autoPlayTimer);
-                this.autoPlayTimer = null;
-            }
-        },
-
-        toggleAutoPlay() {
-            if (this.isAutoPlaying) {
-                this.stopAutoPlay();
-            } else {
-                this.startAutoPlay();
-            }
-        },
-
-        setAutoPlaySpeed(speed) {
-            this.autoPlaySpeed = parseInt(speed);
-            // Don't restart auto-play automatically, let current timing complete
-        },
-
-        restartAutoPlay() {
-            this.stopAutoPlay();
-
-            // Wait for any current animation to finish before restarting
-            setTimeout(() => {
-                this.curInd = -1;
-                this.stepCnt = 0;
-                this.clearOldStyle();
-                this.startAutoPlay();
-            }, this.isAnimating ? this.animationDuration : 0);
         }
     },
 
@@ -390,22 +266,11 @@ const vm = new Vue({
         gameStatus() {
             if (this.isLoading) return "Loading...";
             if (this.error) return "Error";
-            if (this.isAutoPlaying) return "Auto-playing...";
             return "Ready";
         },
 
         totalPathLength() {
             return this.path.length;
-        },
-
-        autoPlayProgress() {
-            if (this.segments.length === 0) return 0;
-            return Math.round(((this.curInd + 1) / this.segments.length) * 100);
         }
-    },
-
-    // Clean up timer when component is destroyed
-    beforeDestroy() {
-        this.stopAutoPlay();
     }
 });

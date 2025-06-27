@@ -1,23 +1,20 @@
 package com.caicai.game.common;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
-
-import org.springframework.stereotype.Component;
-
-import static com.caicai.game.maze.BlockType.WALL;
 import com.caicai.game.maze.Maze;
 import com.caicai.game.maze.PointUtil;
+import org.springframework.stereotype.Component;
+
+import java.util.*;
+
+import static com.caicai.game.maze.BlockType.WALL;
 import static com.caicai.game.maze.PointUtil.getDis;
 
 @Component
 public interface PathFinder {
-    Point getNextPoint(Maze maze, Point curPos);
+
+    default List<Point> solve(Maze maze) {
+        return null;
+    }
 
     default public List<Point> getBestWay(Maze maze, Point p1, Point p2) {
         return null;
@@ -53,12 +50,12 @@ public interface PathFinder {
                 break;
             }
             nxt.stream()
-                    .filter(p -> vis.contains(p) == false && maze.getBlock(p) != WALL && openSet.contains(p) == false)
-                    .forEach(p -> {
-                        cost.put(p, cost.get(cp) + 1);
-                        par.put(p, cp);
-                        openSet.add(p);
-                    });
+               .filter(p -> vis.contains(p) == false && maze.getBlock(p) != WALL && openSet.contains(p) == false)
+               .forEach(p -> {
+                   cost.put(p, cost.get(cp) + 1);
+                   par.put(p, cp);
+                   openSet.add(p);
+               });
         }
         return res.reversed();
     }
@@ -103,11 +100,7 @@ public interface PathFinder {
         return res.size();
     }
 
-    //    public List getList() {
-//    }
-    default int h() {
-        return 0;
-    }
+
 }
 
 @Component
@@ -118,7 +111,6 @@ class Dp implements PathFinder {
     private int[] dp;
     private int[] parent;
 
-    @Override
     public Point getNextPoint(Maze maze, Point curPos) {
         buildGraph(maze);
 
@@ -145,6 +137,7 @@ class Dp implements PathFinder {
     // 每个特殊点积分加成作为点权
     // (出口,boss可以视作点权为0的特殊点,直接置于点数组最后,可以直接得出到达boss处所可以获得的最大积分)
     // ! dp[i]为从起点开始到[i-1]特殊点可以获得的积分最大值，i-1个点必须被使用
+//!    问题在于没有确定前驱状态,需要先进行拓扑排序确定前驱
     // dp[i] = max(...dp[j]+cost[i,j]+v[i-1]) // j < i (n*n)
     // run n times from start to every point to get the weight of the path
     public void buildGraph(Maze maze) {
@@ -258,7 +251,6 @@ class Dp implements PathFinder {
 
 @Component
 class Greedy implements PathFinder {
-    @Override
     public Point getNextPoint(Maze maze, Point curPos) {
         // List<Point> surrendPoints = PointUtil.getSurrendPoints(maze, curPos);
         // List<Point> surrendPoints = .toList();

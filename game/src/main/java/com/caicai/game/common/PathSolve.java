@@ -3,13 +3,14 @@ package com.caicai.game.common;
 import com.caicai.game.maze.BlockType;
 import com.caicai.game.maze.Maze;
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-public class PathSolve {
+@Component
+public class PathSolve implements  PathFinder {
     //    xia you shang zuo
     boolean[][] vis;
     ArrayList<Point> path = new ArrayList<>();
