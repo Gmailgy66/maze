@@ -14,7 +14,7 @@ import static com.caicai.game.maze.BlockType.PATH;
 @Data
 public class Maze {
     private Boss boss;
-    private  Point BossPoint;
+    private Point BossPoint;
 
     private BlockType[][] board;
     private boolean[][] vis;
@@ -68,7 +68,7 @@ public class Maze {
                     case PATH -> Paths.add(np);
                     case SKILL -> skillMap.put(np, Skill.randomSkill());
                     case BOSS -> {
-                        boss = new Boss(new Random().nextInt(300)+100, Skill.randomSkill(),Skill.randomSkill());
+                        boss = new Boss(new Random().nextInt(300) + 100, Skill.randomSkill(), Skill.randomSkill());
                         BossPoint = np;
                     }
                 }

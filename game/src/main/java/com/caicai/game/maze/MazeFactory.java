@@ -77,6 +77,7 @@ public class MazeFactory {
 
     void postBuild(Maze maze) {
         // check whether exit and start is in the maze
+        maze.buildExtraInfo();
         if (maze.getSTART() == null) {
             log.error("Maze has no start point");
             // do gen a start point
@@ -89,6 +90,7 @@ public class MazeFactory {
                                      .orElse(null);
             paths.remove(randomPoint);
             maze.setBlock(randomPoint, BlockType.START);
+            maze.setSTART(randomPoint);
         }
         if (maze.getEXIT() == null) {
             Set<Point> paths = maze.getPaths();
@@ -98,11 +100,10 @@ public class MazeFactory {
                                      .orElse(null);
             paths.remove(randomPoint);
             maze.setBlock(randomPoint, BlockType.EXIT);
+            maze.setEXIT(randomPoint);
             log.error("Maze has no exit point");
         }
-        maze.buildExtraInfo();
     }
-
     public void doDraw(Maze maze, List<Point>l) {
 
     }

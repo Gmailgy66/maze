@@ -4,7 +4,7 @@ const vm = new Vue({
         message: 'Hello Vue!',
         board: [
             ["WALL", "WALL", "WALL", "WALL", "WALL"],
-            ["WALL", "PATH  ", "PATH", "GOAL", "WALL"],
+            ["WALL", "PATH", "PATH", "GOAL", "WALL"],
             ["WALL", "HERO", "PATH", "PATH", "WALL"],
             ["WALL", "PATH", "PATH", "PATH", "WALL"],
             ["WALL", "WALL", "WALL", "WALL", "WALL"]
@@ -12,13 +12,13 @@ const vm = new Vue({
         validSize: 10,
         lastCellInfo: null,
         blockTypes: {
-            'WALL': '1',
+            'WALL': '🧱',
             'PATH': '⬜',
             'HERO': '🦸',
             'GOAL': '🎯',
             'START': '🏁',
-            'SKILL': ['🗡️', '⚔️', '🏹', '💣',]
-            // Add more block types as needed
+            'GOLD': '🪙',
+            'SKILL': ['🗡️', '⚔️', '🏹', '💣']
         },
         heroPos: {
             x: 2,
@@ -31,60 +31,165 @@ const vm = new Vue({
         segments: [],
         steps: 0,
         fullPath: [],
+        isLoading: false,
+        error: null,
+        curInd: 0
     },
 
     created() {
         this.refresh();
     },
+
     methods: {
-        refresh() {
-            fetch("http://localhost:8080/fullUpdate")
-                .then(
-                    res => {
-                        // console.log(res);
-                        res.json().then(data => {
-                            // console.log(data);
-                            this.board = data.maze.board;
-                            this.heroPos = { x: data["position"].x, y: data["position"].y };
-                            console.log("data is when mounted", data);
-                        });
-                    }
-                );
+        async refresh() {
+            this.isLoading = true;
+            this.error = null;
+
+            try {
+                const response = await fetch("http://localhost:8080/fullUpdate");
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                this.board = data.maze?.board || this.board;
+                this.heroPos = {
+                    x: data.position?.x || this.heroPos.x,
+                    y: data.position?.y || this.heroPos.y
+                };
+
+                console.log("Game data refreshed:", data);
+            } catch (error) {
+                console.error("Failed to refresh game data:", error);
+                this.error = "Failed to load game data. Please try again.";
+            } finally {
+                this.isLoading = false;
+            }
         },
+
         getCell(x, y) {
-            return this.$refs[`cell_${x}_${y}`][0];
+            const cellRef = this.$refs[`cell_${x}_${y}`];
+            return cellRef && cellRef[0] ? cellRef[0] : null;
         },
-        // recover() {
-        //     if (this.lastCellInfo !== null) {
-        //         const x1 = this.lastCellInfo.pos.x;
-        //         const y1 = this.lastCellInfo.pos.y;
-        //         let lastCell = this.$refs[`cell_${x1}_${y1}`][0];
-        //         // lastCell.inn
-        //         this.$set(this.board[x1], y1, this.lastCellInfo.block);
-        //         lastCell.style.backgroundColor = "";
-        //         console.log("recovered last cell", this.lastCellInfo);
 
-        //     }
-        // },
-        handleSolve() {
-            fetch("http://localhost:8080/nextPointWithPath")
-                .then(res => res.json().then(data => {
-                    console.log("data is", data);
-                    console.log("this is ", this);
-                    this.path = data.path;
-                    this.path.forEach(p => {
-                        console.log("p is ", p);
-                        if (this.board[p.x][p.y] === "GOLD") {
-                            this.segments.add([]);
-                        }
-                        this.segments[this.segments.length - 1].add(p);
-                    });
-                    console.log("segments are ", this.segments);
-                }));
-        },
-        getRes(url) {
+        async handleSolve() {
+            this.isLoading = true;
+            this.error = null;
+            try {
+                const response = await fetch("http://localhost:8080/nextPointWithPath");
 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                this.path = data.path || [];
+                this.segments = [];
+                console.log("Path data received:", this.path);
+                // this.processPathSegments();
+                // console.log("Path solved:", { path: this.path, segments: this.segments });
+            } catch (error) {
+                console.error("Failed to solve path:", error);
+                this.error = "Failed to solve the maze. Please try again.";
+            } finally {
+                this.isLoading = false;
+            }
         },
+
+        processPathSegments() {
+            if (!this.path.length) return;
+
+            this.segments = [[]];
+
+            this.path.forEach(point => {
+                if (this.isValidPosition(point.x, point.y) &&
+                    this.board[point.x][point.y] === "GOLD") {
+                    this.segments.push([]);
+                }
+
+                if (this.segments.length > 0) {
+                    this.segments[this.segments.length - 1].push(point);
+                }
+            });
+            // Remove empty segments
+            this.segments = this.segments.filter(segment => segment.length > 0);
+            console.log("Processed path segments:", this.segments);
+        },
+
+        isValidPosition(x, y) {
+            return x >= 0 && x < this.board.length &&
+                y >= 0 && y < this.board[0].length;
+        },
+
+        async getRes(url) {
+            if (!url) {
+                console.warn("URL is required for getRes method");
+                return null;
+            }
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error(`Failed to fetch data from ${url}:`, error);
+                return null;
+            }
+        },
+
+        resetGame() {
+            // this.path = [];
+            // this.segments = [];
+            this.steps = 0;
+            this.score = 0;
+            this.error = null;
+            this.refresh();
+        },
+        highlightLine(ind) {
+            this.segments[ind].forEach(point => {
+                const cell = this.getCell(point.x, point.y);
+                if (cell) {
+                    cell.style.backgroundColor = 'yellow';
+                }
+            });
+        },
+        recoverLastLine(ind) {
+            if (ind < 0 || ind >= this.segments.length) {
+                console.warn("Invalid segment index");
+                return;
+            }
+            this.segments[ind].forEach(point => {
+                const cell = this.getCell(point.x, point.y);
+                if (cell) {
+                    cell.style.backgroundColor = '';
+                }
+            });
+        },
+        stepOne() {
+            if (this.curInd < 0 || this.curInd >= this.segments.length) {
+                console.warn("Current index is out of bounds");
+                return;
+            }
+            ++this.curInd;
+            this.highlightLine(this.curInd);
+            this.recoverLastLine(this.curInd - 1);
+        }
     },
-}
-);
+
+    computed: {
+        gameStatus() {
+            if (this.isLoading) return "Loading...";
+            if (this.error) return "Error";
+            return "Ready";
+        },
+
+        totalPathLength() {
+            return this.path.length;
+        }
+    }
+});
