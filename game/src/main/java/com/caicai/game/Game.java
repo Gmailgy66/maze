@@ -218,7 +218,6 @@ public class Game {
     public Result getFullPath() {
         PathSolve pathSolve = new PathSolve();
         List<Point> path = pathSolve.solve(maze);
-        System.out.println(path);
         return resultFactory.ok().put("path", path);
     }
 

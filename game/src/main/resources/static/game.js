@@ -468,12 +468,12 @@ const vm = new Vue({
 
             try {
                 const formData = new FormData();
-                
+
                 // Only append file if not using default
                 if (!useDefault && this.selectedFile) {
                     formData.append('mazeFile', this.selectedFile);
                 }
-                
+
                 const endpoint = useDefault ? '/loadMaze' : '/uploadMaze';
                 const response = await fetch(endpoint, {
                     method: 'POST',
@@ -487,11 +487,6 @@ const vm = new Vue({
                 const result = await response.json();
                 console.log(`Maze ${useDefault ? 'loaded' : 'uploaded'} successfully:`, result);
 
-                // Clear the file input only if we uploaded a file
-                if (!useDefault) {
-                    this.selectedFile = null;
-                    this.$refs.mazeFileInput.value = '';
-                }
 
                 this.flushData();
                 await this.getCurBoardInfo();

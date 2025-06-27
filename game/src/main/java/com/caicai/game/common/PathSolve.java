@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @Component
-public class PathSolve implements  PathFinder {
+public class PathSolve implements PathFinder {
     //    xia you shang zuo
     boolean[][] vis;
     ArrayList<Point> path = new ArrayList<>();
@@ -21,8 +22,10 @@ public class PathSolve implements  PathFinder {
 
     public List<Point> solve(Maze maze) {
         vis = new boolean[maze.getBoardSize()][maze.getBoardSize()];
-        dfs(maze, maze.getSTART());
+        int profit = dfs(maze, maze.getSTART());
         buildRoad(maze, maze.getSTART());
+        System.out.println("path is " + path);
+        System.out.println("max profit is :" + profit);
         return path;
 //        return path;
     }
@@ -56,16 +59,16 @@ public class PathSolve implements  PathFinder {
         List<Point> vList = new ArrayList();
         int profit = 0;
         int subPoints = 0000;
+        if (maze.getBlock(x, y) == BlockType.GOLD) {
+            profit += maze.GOLD_SCORE;
+        } else if (maze.getBlock(x, y) == BlockType.TRAP) {
+            profit += maze.TRAP_SCORE;
+        }
         for (int i = 0; i < 4; i++) {
             int nx = x + mov[i].getX();
             int ny = y + mov[i].getY();
             if (nx >= 0 && nx < maze.getBoardSize() && ny >= 0 && ny < maze.getBoardSize() && maze.getBlock(nx, ny) != BlockType.WALL && !vis[nx][ny]) {
                 vis[nx][ny] = true;
-                if (maze.getBlock(x, y) == BlockType.GOLD) {
-                    profit += maze.GOLD_SCORE;
-                } else if (maze.getBlock(x, y) == BlockType.TRAP) {
-                    profit += maze.TRAP_SCORE;
-                }
                 int subPro = dfs(maze, new Point(nx, ny));
                 if (subPro > 0) {
                     subPoints |= 1 << i;
