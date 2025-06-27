@@ -11,13 +11,22 @@
     <div id="app">
         <h1>🏰 Maze Adventure 🏰</h1>
 
-        <form>
+        <!-- Game Status Display -->
+        <div v-if="isLoading" class="status-message loading">
+            ⏳ {{ gameStatus }}
+        </div>
+        <div v-if="error" class="status-message error">
+            ❌ {{ error }}
+        </div>
+
+        <form @submit.prevent="updateBoardSize">
             <label for="boardSize">Board Size:</label>
-            <input type="number" name="size" id="boardSize" placeholder="5-20" min="5" max="30" :value="validSize">
+            <input type="number" name="size" id="boardSize" placeholder="5-30" min="5" max="30" v-model="validSize">
+            <button type="submit" :disabled="isLoading">Update Size</button>
         </form>
 
         <div class="game-container">
-            <!-- Controls Section - now first in HTML and will appear on left -->
+            <!-- Controls Section -->
             <div class="controls-section">
                 <!-- Game Info -->
                 <div class="game-info">
@@ -28,26 +37,43 @@
                     </div>
                     <div class="stat">
                         <span>Level:</span>
-                        <span>1</span>
+                        <span>{{ currentLevel }}</span>
                     </div>
                     <div class="stat">
                         <span>Steps:</span>
-                        <span id="steps">{{ path.length }}</span>
+                        <span id="steps">{{ steps }}</span>
+                    </div>
+                    <div class="stat">
+                        <span>Path Length:</span>
+                        <span>{{ totalPathLength }}</span>
+                    </div>
+                    <div class="stat">
+                        <span>Segments:</span>
+                        <span>{{ segments.length }}</span>
                     </div>
                 </div>
+
                 <!-- Game Controls -->
                 <div class="button-container">
-                    <button @click="handleSolve">Next Step</button>
-<!--                    <button @click="setpOne">setpOne</button>-->
-<!--                    <button @click="refresh">Refresh</button>-->
-<!--                    <button @click="resetGame">Reset Game</button>-->
+                    <button @click="handleSolve" :disabled="isLoading">
+                        {{ isLoading ? 'Solving...' : 'Solve Path' }}
+                    </button>
+                    <button @click="stepOne" :disabled="isLoading || segments.length === 0">
+                        Step Forward
+                    </button>
+                    <button @click="refresh" :disabled="isLoading">
+                        Refresh
+                    </button>
+                    <button @click="resetGame" :disabled="isLoading">
+                        Reset Game
+                    </button>
                 </div>
 
                 <!-- Game Legend -->
                 <div class="game-legend">
                     <h3>🗺️ Legend</h3>
                     <div class="legend-item">
-                        <span class="legend-icon">🦸</span>
+                        <span class="legend-icon">🧙‍♂️</span>
                         <span>Hero</span>
                     </div>
                     <div class="legend-item">
@@ -70,36 +96,57 @@
                         <span class="legend-icon">☠️</span>
                         <span>Trap</span>
                     </div>
+                    <div class="legend-item">
+                        <span class="legend-icon">🏁</span>
+                        <span>Start</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-icon">🔚</span>
+                        <span>Exit</span>
+                    </div>
+                </div>
+
+                <!-- Path Progress -->
+                <div v-if="segments.length > 0" class="path-progress">
+                    <h3>🛤️ Path Progress</h3>
+                    <div class="progress-info">
+                        <span>Current Segment: {{ curInd + 1 }} / {{ segments.length }}</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Board Section - now second and will appear on right -->
+            <!-- Board Section -->
             <div class="board-section">
-                <table id="board">
+                <div v-if="board.length === 0" class="empty-board">
+                    No maze loaded. Click "Refresh" to load a maze.
+                </div>
+                <table v-else id="board">
                     <tr v-for="(row, rowIndex) in board" :key="rowIndex">
-                        <td v-for="(block, colIndex) in row" :key="colIndex" :ref="`cell_${rowIndex}_${colIndex}`">
-                            <span v-if="block.toUpperCase() === 'WALL'">🧱</span>
-                            <span v-else-if="block === 'PATH'"> </span>
+                        <td v-for="(block, colIndex) in row" :key="colIndex" :ref="`cell_${rowIndex}_${colIndex}`"
+                            :class="getCellClass(rowIndex, colIndex)">
+                            <span v-if="block && block.toUpperCase() === 'WALL'">🧱</span>
+                            <span v-else-if="block === 'PATH'">  </span>
                             <span v-else-if="block === 'GOAL'">🎯</span>
-                            <span v-else-if="block === 'EXIT'" style="background-color: aquamarine">🔚</span>
-                            <span v-else-if="block === 'START'" style="background-color: pink">🏁</span>
-                            <span v-else-if="block === 'BOSS'" style="background-color: darkred">🦖</span>
+                            <span v-else-if="block === 'EXIT'">🔚</span>
+                            <span v-else-if="block === 'START'">🏁</span>
+                            <span v-else-if="block === 'BOSS'">🦖</span>
                             <span v-else-if="block === 'GOLD'">🪙</span>
                             <span v-else-if="block === 'SKILL'">💣</span>
                             <span v-else-if="block === 'TRAP'">☠️</span>
                             <span v-else-if="block === 'LOCKER'">🔞</span>
-                            <span v-else>{{ block }}</span>
-                            <span v-if=" heroPos.y == colIndex && heroPos.x == rowIndex">🧙‍♂️</span>
+                            <span v-else>{{ block || '?' }}</span>
+                            <!-- Hero overlay -->
+                            <span v-if="heroPos.y === colIndex && heroPos.x === rowIndex"
+                                class="hero-overlay">🧙‍♂️</span>
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
     </div>
-    <!-- ...existing script content... -->
+
+    <script src="./vue.js"></script>
+    <script src="./game.js"></script>
 </body>
-<script src="./vue.js">
-</script>
-<script src="./game.js"></script>
 
 </html>
