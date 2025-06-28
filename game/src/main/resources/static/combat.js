@@ -61,6 +61,12 @@ function handleNextTurn() {
     reduceCooldowns();
     updateDisplay();
 
+    const seqDiv = document.getElementById("skill-sequence");
+    const span = document.createElement("span");
+    span.textContent = `→ 技能 ${skillIndex} `;
+    seqDiv.appendChild(span);
+
+
     if (turn >= actions.length || currentBoss >= bossHP.length) {
         document.getElementById("next-turn").disabled = true;
         document.getElementById("exit").hidden = false;
@@ -85,6 +91,7 @@ function startCombat() {
             document.getElementById("start").hidden = true;
             document.getElementById("next-turn").hidden = false;
             document.getElementById("exit").hidden = true;
+            document.getElementById("skill-sequence").innerHTML = "";
 
             updateDisplay();
         })
