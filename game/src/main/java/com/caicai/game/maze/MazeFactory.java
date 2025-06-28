@@ -12,13 +12,22 @@ import java.util.*;
 import static com.caicai.game.common.RandUtil.randEven;
 import static com.caicai.game.common.RandUtil.randOdd;
 
+/**
+ * 迷宫生成工厂类
+ * 负责使用递归分割算法创建迷宫，并添加各种特殊元素
+ */
 @Slf4j
 @Component
 public class MazeFactory {
 
+    /** 游戏配置信息 */
     @Autowired
     GameConf gameConf;
 
+    /**
+     * 获取生成的迷宫
+     * @return 完成初始化和构建的迷宫对象
+     */
     public Maze getMaze() {
         log.info("Maze generated with size: {}", gameConf.getSize());
         Maze maze = new Maze(gameConf.getSize());
@@ -44,18 +53,22 @@ public class MazeFactory {
         return maze;
     }
 
-    /**
-     * 根据配置文件生成迷宫
-     *
-     * @return 迷宫对象
-     */
+    /** 金币基础生成概率 */
     private final double GBASE = 0.3;
+    /** 技能基础生成概率 */
     private final double SKBASE = 0.1;
+    /** 陷阱基础生成概率 */
     private final double TBASE = 0.1;
+    /** 特殊元素的最大数量 */
     private Integer MAXSP;
 
+    /** 各类型方块的最大数量限制 */
     Map<BlockType, Integer> maxBlockType = new HashMap<>();
 
+    /**
+     * 初始化各类型方块的数量限制
+     * 根据游戏配置的难度级别调整特殊元素的数量
+     */
     void init() {
         int size = gameConf.getSize();
         size *= size;
@@ -75,6 +88,11 @@ public class MazeFactory {
         maxBlockType.put(BlockType.SKILL, (int) Math.min((int) ((SKBASE + level) * size), level * 2 + 1));
     }
 
+    /**
+     * 迷宫构建后的处理
+     * 检查并确保迷宫包含起点和终点，若没有则随机生成
+     * @param maze 要处理的迷宫对象
+     */
     void postBuild(Maze maze) {
         // check whether exit and start is in the maze
         maze.buildExtraInfo();
@@ -104,10 +122,22 @@ public class MazeFactory {
             log.error("Maze has no exit point");
         }
     }
+    
+    /**
+     * 绘制路径点列表（未实现）
+     * @param maze 迷宫对象
+     * @param l 点列表
+     */
     public void doDraw(Maze maze, List<Point>l) {
-
+        // 未实现
     }
 
+    /**
+     * 随机生成一个方块类型
+     * 根据条件和限制随机选择一个方块类型
+     * @param condition 可选条件参数，包括排除类型和必需类型
+     * @return 随机选择的方块类型
+     */
     BlockType randBlock(Object... condition) {
         int typeCnt = BlockType.getTypeCnt();
         Set excludedType = null;
@@ -135,20 +165,18 @@ public class MazeFactory {
         }
     }
 
-
     /**
-     * 生成迷宫
-     * 递归分割法
-     *
+     * 生成迷宫的核心方法
+     * 使用递归分割算法生成迷宫
+     * 
      * @param x      起始x坐标
      * @param y      起始y坐标
-     * @param height 高度
-     * @param width  宽度
+     * @param height 区域高度
+     * @param width  区域宽度
      * @param r      随机数生成器
      * @param maze   迷宫对象
      */
     private void genMaze(int x, int y, int height, int width, Random r, Maze maze) {
-
         int xPos, yPos;
         if (height <= 2 || width <= 2) {
             return;
@@ -167,6 +195,8 @@ public class MazeFactory {
             maze.setBlock(i, yPos, BlockType.WALL);
             // blocked[i][yPos] = true;
         }
+        
+        // 在隔墙上创建四个随机通道点，并在其中随机选择一个不设置（即保留为通道）
         Point[] points = {new Point(xPos, randOdd(yPos, y + width)),
                           new Point(xPos, randOdd(y, yPos)),
                           new Point(randOdd(x, xPos), yPos),
@@ -190,6 +220,8 @@ public class MazeFactory {
             fo.write('\n');
             fo.close();
 
+            // 递归处理四个象限
+            // 左上角
             genMaze(x, y, xPos - x, yPos - y, r, maze);
             // 右上角
             genMaze(x, yPos + 1, xPos - x, width - yPos + y - 1, r, maze);
@@ -202,5 +234,4 @@ public class MazeFactory {
             log.error("{} is {} ", "e", e);
         }
     }
-
 }
