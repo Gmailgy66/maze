@@ -86,6 +86,9 @@
                     <button @click="stepOne" :disabled="isLoading || segments.length === 0">
                         Step Forward
                     </button>
+                    <button @click="quickEval" :disabled="isLoading || segments.length === 0">
+                        Quick Eval
+                    </button>
                     <button @click="resetGame" :disabled="isLoading">
                         Reset Game
                     </button>

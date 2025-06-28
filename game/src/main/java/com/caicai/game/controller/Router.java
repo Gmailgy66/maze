@@ -29,7 +29,7 @@ public class Router {
     @Autowired
     private GameConf gameConf;
 
-    @RequestMapping("/game.html")
+    @RequestMapping("/game")
     public String maze(@RequestParam(name = "size", required = false) Integer size) {
         if (size != null && size >= 3 && size < 100) {
             if (size % 2 == 0) {
@@ -40,7 +40,7 @@ public class Router {
         }
         var result = game.init();
         // System.out.println(result);
-        return "game";
+        return "redirect:/game.html";
         // return game.init();
     }
 

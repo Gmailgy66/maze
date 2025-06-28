@@ -77,7 +77,7 @@ const vm = new Vue({
                     };
                 }
 
-                this.boardCopy = this.board;
+                this.boardCopy = JSON.parse(JSON.stringify(this.board)); // Deep copy of the board
                 console.log("Game data refreshed:", data);
                 // auto solve
                 await this.handleSolve();
@@ -179,7 +179,7 @@ const vm = new Vue({
                 // this will direct flush the full board
                 // just notify the server to update the board size
                 // the udpate of info need a more request
-                const response = await fetch(`/game.html?size=${this.validSize}`, {
+                const response = await fetch(`/game?size=${this.validSize}`, {
                     method: 'GET'
                 });
                 if (response.ok) {
@@ -224,7 +224,7 @@ const vm = new Vue({
                 this.curInd = -1;
                 console.log("Path data received:", this.path);
                 this.processPathSegments();
-                console.log("Path solved:", { path: this.path, segments: this.segments });
+                console.log("Path solved:", {path: this.path, segments: this.segments});
             } catch (error) {
                 console.error("Failed to solve path:", error);
                 this.error = "Failed to solve the maze. Please try again.";
@@ -250,7 +250,7 @@ const vm = new Vue({
                 console.log("Path data received:", this.path);
                 this.processPathSegments();
 
-                console.log("Path solved:", { path: this.path, segments: this.segments });
+                console.log("Path solved:", {path: this.path, segments: this.segments});
             } catch (error) {
                 console.error("Failed to solve path:", error);
                 this.error = "Failed to solve the maze. Please try again.";
@@ -316,7 +316,7 @@ const vm = new Vue({
             this.board;
             this.stopAutoPlay(); // Stop auto-play when resetting
             this.clearOldStyle();
-            // this.getCurBoardInfo();
+            this.getCurBoardInfo();
         },
 
         clearOldStyle() {
@@ -331,7 +331,52 @@ const vm = new Vue({
                 });
             });
         },
+        quickEval() {
+            this.quickHighlightArr(this.path);
 
+        },
+        quickHighlightArr(arr) {
+
+            this.isAnimating = true;
+            const randomColor = `hsl(${Math.random() * 360}, 100%, 75%)`;
+            const segment = arr;
+            const segmentAnimationTime = segment.length * (this.animationDuration / 10); // Reduced from /2
+
+            // Animate through each point in the segment
+            segment.forEach((point, pointIndex) => {
+                setTimeout(() => {
+                    this.stepCnt++;
+
+                    // Process item collection BEFORE updating position
+                    this.processItemCollection(point.x, point.y);
+
+                    // Clear previous hero position animation
+                    const prevCell = this.getCell(this.heroPos.x, this.heroPos.y);
+                    if (prevCell) {
+                        prevCell.classList.remove('hero-moving');
+                    }
+
+                    // Update hero position
+                    this.heroPos = {x: point.x, y: point.y};
+
+                    // Add movement animation to new position
+                    const cell = this.getCell(point.x, point.y);
+                    if (cell) {
+                        cell.style.backgroundColor = randomColor;
+                        cell.classList.add('hero-moving', 'path-highlight');
+
+                        // Remove animation class after animation completes
+                        setTimeout(() => {
+                            cell.classList.remove('hero-moving');
+                        }, this.animationDuration);
+                    }
+                }, pointIndex * (this.animationDuration / 10)); // Reduced from /2
+            });
+
+            setTimeout(() => {
+                this.isAnimating = false;
+            }, segmentAnimationTime + this.animationDuration);
+        },
         highlightSegment(segmentIndex) {
             if (segmentIndex < 0 || segmentIndex >= this.segments.length) {
                 console.warn("Invalid segment index:", segmentIndex);
@@ -366,7 +411,7 @@ const vm = new Vue({
                     }
 
                     // Update hero position
-                    this.heroPos = { x: point.x, y: point.y };
+                    this.heroPos = {x: point.x, y: point.y};
 
                     // Add movement animation to new position
                     const cell = this.getCell(point.x, point.y);

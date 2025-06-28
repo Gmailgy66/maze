@@ -24,6 +24,7 @@ public enum BlockType implements Comparable<BlockType> {
 
     public static final int GOLD_SCORE = 5;
     public static final int TRAP_SCORE = -3;
+    public static final int FAKE_EXIT_SCORE = 9999;
     @Getter
     final int score;
 
