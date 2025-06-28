@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -84,15 +85,8 @@ public class Router {
 
     @RequestMapping("/combat")
     public String combat(Model model) {
-        // model.addAttribute("result", game.openCombat());
-        game.openCombat();
+        model.addAttribute("result",game.openCombat());
         return "combat";
-    }
-
-    @ResponseBody
-    @RequestMapping("/nextTurn")
-    public Result nextTurn() {
-        return game.nextTurn();
     }
 
     @ResponseBody

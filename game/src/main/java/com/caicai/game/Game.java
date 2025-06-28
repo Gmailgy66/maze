@@ -102,12 +102,11 @@ public class Game {
         return resultFactory.ok();
     }
 
-    public Result openCombat() {
-        combat = new Combat(hero, maze.getBoss());
+    public HashMap<String, Object> openCombat() {
+        combat = new Combat();
         log.info("openCombat");
-        var result = resultFactory.ok();
-        result.put("fight", "open combat!");
-        return result;
+        HashMap<String,Object> map = combat.start();
+        return map;
     }
 
     public Result fullInfo() {
@@ -150,12 +149,11 @@ public class Game {
         return handleBlock(this.curPos);
     }
 
-    public Result nextTurn() {
-        log.info("nextTurn");
-        var result = resultFactory.ok();
-        result.put("fight", combat.next());
-        return result;
-    }
+//    public HashMap<String, Object> startFight() {
+//        log.info("nextTurn");
+//        HashMap<String,Object> map = combat.start();
+//        return map;
+//    }
 
     //
     public Result G() {
