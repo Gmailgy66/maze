@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -55,8 +56,8 @@ public class Router {
     @RequestMapping("/loadMaze")
     public Result loadMaze() {
         InputStream is = this.getClass()
-                             .getClassLoader()
-                             .getResourceAsStream("maze.json");
+                .getClassLoader()
+                .getResourceAsStream("maze.json");
         if (is == null) {
             System.out.println("open file failed");
             throw new RuntimeException("failed");
@@ -84,20 +85,19 @@ public class Router {
 
     @RequestMapping("/combat")
     public String combat(Model model) {
-        // model.addAttribute("result", game.openCombat());
-        game.openCombat();
+//        model.addAttribute("result",game.openCombat());
         return "combat";
     }
 
     @ResponseBody
-    @RequestMapping("/nextTurn")
-    public Result nextTurn() {
-        return game.nextTurn();
+    @RequestMapping("startCombat")
+    public HashMap<String, Object> startCombat() {
+        return game.openCombat();
     }
 
     @ResponseBody
     @RequestMapping("/quiz")
-    public Map<String, Object> quiz() {
+    public Map<String, Object> quiz() throws Exception {
         return new Question().start();
     }
 
