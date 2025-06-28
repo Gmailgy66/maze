@@ -1,15 +1,265 @@
+body {
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    color: #333;
+}
+
 .container {
-    width: 600px;
-    margin: auto;
-    font-family: Arial;
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
+
+h1 {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    font-size: 2rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
 .section {
-    margin-bottom: 20px;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    border-left: 4px solid #007bff;
 }
-.skill, .boss {
-    margin: 5px 0;
+
+.upload-section {
+    border-left-color: #28a745;
 }
-.skill span.cooldown {
-    color: gray;
-    font-size: 0.9em;
+
+.controls-section {
+    border-left-color: #ffc107;
+}
+
+.stats-section {
+    border-left-color: #17a2b8;
+}
+
+h3 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* File Upload Styling */
+.file-input-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    left: -9999px;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: 500;
+}
+
+.file-label:hover {
+    background: #0056b3;
+}
+
+.file-name {
+    margin-left: 10px;
+    font-style: italic;
+    color: #666;
+}
+
+/* Button Styling */
+.button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+}
+
+.btn-info {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+.default-btn {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: #212529;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Status Grid */
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.boss {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.boss.defeated {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    opacity: 0.7;
+}
+
+/* Skill Grid */
+.skill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.skill {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.skill .cooldown {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.skill.on-cooldown {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+}
+
+/* Action Sequence */
+.action-sequence {
+    background: white;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    min-height: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-sequence span {
+    background: #007bff;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat-label {
+    display: block;
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.stat-item span:last-child {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        border-radius: 10px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+        padding: 15px;
+    }
+    
+    .section {
+        margin: 15px;
+        padding: 15px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    button {
+        width: 100%;
+    }
 }

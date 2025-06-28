@@ -1,35 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Open Combat</title>
     <link rel="stylesheet" th:href="@{/combat.css}">
 </head>
+
 <body>
-<script th:src="@{/combat.js}"></script>
-<div class="container">
-    <h2>Boss 战斗</h2>
+    <script th:src="@{/combat.js}"></script>
+    <div class="container">
+        <h1>🦖 Boss 战斗系统 ⚔️</h1>
 
-    <div class="section">
-        <h3>Boss 血量</h3>
-        <div id="boss-status"></div>
-    </div>
+        <!-- File Upload Section -->
+        <div class="section upload-section">
+            <h3>📁 上传战斗配置</h3>
+            <form id="boss-upload-form" enctype="multipart/form-data">
+                <div class="file-input-wrapper">
+                    <input type="file" id="bossFile" accept=".json,.txt" onchange="onBossFileSelected(event)">
+                    <label for="bossFile" class="file-label">选择Boss配置文件</label>
+                    <span id="file-name" class="file-name"></span>
+                </div>
+                <button type="button" onclick="uploadBossFile()" id="upload-btn" disabled>上传配置</button>
+                <button type="button" onclick="useDefaultBoss()" class="default-btn">使用默认配置</button>
+            </form>
+        </div>
 
-    <div class="section">
-        <h3>玩家技能</h3>
-        <div id="skill-status"></div>
-    </div>
+        <!-- Boss Status Section -->
+        <div class="section">
+            <h3>🦖 Boss 血量状态</h3>
+            <div id="boss-status" class="status-grid"></div>
+        </div>
 
-    <div class="section">
-        <h3>技能序列</h3>
-        <div id ="skill-sequence"></div>
-    </div>
+        <!-- Player Skills Section -->
+        <div class="section">
+            <h3>⚔️ 玩家技能</h3>
+            <div id="skill-status" class="skill-grid"></div>
+        </div>
 
-    <div class="section">
-        <button id="start" onclick="startCombat()">开始战斗</button>
-        <button id="next-turn" onclick="handleNextTurn()" hidden>下一回合</button>
-        <button id="exit" onclick="exitCombat()" hidden>退出战斗</button>
+        <!-- Combat Actions Section -->
+        <div class="section">
+            <h3>🎯 战斗序列</h3>
+            <div id="skill-sequence" class="action-sequence"></div>
+        </div>
+
+        <!-- Combat Controls -->
+        <div class="section controls-section">
+            <div class="button-group">
+                <button id="start" onclick="startCombat()" class="btn-primary">🚀 开始战斗</button>
+                <button id="next-turn" onclick="handleNextTurn()" class="btn-secondary" hidden>⏭️ 下一回合</button>
+                <button id="auto-play" onclick="toggleAutoPlay()" class="btn-info" hidden>▶️ 自动播放</button>
+                <button id="exit" onclick="exitCombat()" class="btn-danger" hidden>🚪 退出战斗</button>
+            </div>
+        </div>
+
+        <!-- Combat Stats -->
+        <div class="section stats-section" id="combat-stats" hidden>
+            <h3>📊 战斗统计</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">当前回合:</span>
+                    <span id="current-turn">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">已击败Boss:</span>
+                    <span id="defeated-bosses">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">剩余Boss:</span>
+                    <span id="remaining-bosses">0</span>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
+
 </html>
