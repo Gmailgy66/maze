@@ -316,7 +316,7 @@ const vm = new Vue({
             this.board;
             this.stopAutoPlay(); // Stop auto-play when resetting
             this.clearOldStyle();
-            this.getCurBoardInfo();
+            // this.getCurBoardInfo();
         },
 
         clearOldStyle() {
@@ -456,7 +456,7 @@ const vm = new Vue({
             // Calculate delay: base speed + time for current segment animation
             const currentSegment = this.segments[this.curInd + 1];
             const segmentAnimationTime = currentSegment ?
-                currentSegment.length * (this.animationDuration / 3) : 0; // Reduced from /2
+                currentSegment.length * (this.animationDuration / 4) : 0; // Reduced from /3 for faster animation
 
             const totalDelay = this.autoPlaySpeed + segmentAnimationTime;
 

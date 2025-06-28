@@ -107,13 +107,14 @@
                     </div>
 
                     <div class="speed-control">
-                        <label for="speed-slider">Speed: {{ 2100 - autoPlaySpeed }}ms</label>
-                        <input type="range" id="speed-slider" min="50" max="2000" step="50" :value="autoPlaySpeed"
-                            @input="setAutoPlaySpeed($event.target.value)" />
-                        <div class="speed-labels">
-                            <span>Ultra Fast</span>
-                            <span>Slow</span>
-                        </div>
+                        <label for="speed-slider">Speed: {{ autoPlaySpeed <= 10 ? 'Ultra Fast (' + autoPlaySpeed + 'ms)'
+                                : (2100 - autoPlaySpeed) + 'ms' }}</label>
+                                <input type="range" id="speed-slider" min="1" max="2000" step="1" :value="autoPlaySpeed"
+                                    @input="setAutoPlaySpeed($event.target.value)" />
+                                <div class="speed-labels">
+                                    <span>Instant (1ms)</span>
+                                    <span>Slow (2000ms)</span>
+                                </div>
                     </div>
 
                     <div v-if="segments.length > 0" class="progress-bar">

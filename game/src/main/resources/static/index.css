@@ -237,9 +237,9 @@ button:active {
 .speed-control input[type="range"] {
     width: 100%;
     margin: 10px 0;
-    height: 6px;
-    border-radius: 3px;
-    background: #ddd;
+    height: 8px; /* Increased from 6px for better visibility */
+    border-radius: 4px; /* Increased from 3px */
+    background: linear-gradient(to right, #ff4444 0%, #ff9800 25%, #4CAF50 75%, #2196F3 100%);
     outline: none;
     -webkit-appearance: none;
 }
@@ -247,30 +247,39 @@ button:active {
 .speed-control input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 18px;
-    height: 18px;
+    width: 22px; /* Increased from 18px */
+    height: 22px; /* Increased from 18px */
     border-radius: 50%;
-    background: #ff9800;
+    background: #fff;
+    border: 3px solid #ff9800;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+
+.speed-control input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
 }
 
 .speed-control input[type="range"]::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
+    width: 22px; /* Increased from 18px */
+    height: 22px; /* Increased from 18px */
     border-radius: 50%;
-    background: #ff9800;
+    background: #fff;
+    border: 3px solid #ff9800;
     cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
 }
 
 .speed-labels {
     display: flex;
     justify-content: space-between;
-    font-size: 12px;
+    font-size: 11px; /* Reduced from 12px to fit longer labels */
     color: #666;
     margin-top: 5px;
+    font-weight: 600;
 }
 
 .progress-bar {
