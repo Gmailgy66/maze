@@ -56,8 +56,8 @@ public class Router {
     @RequestMapping("/loadMaze")
     public Result loadMaze() {
         InputStream is = this.getClass()
-                             .getClassLoader()
-                             .getResourceAsStream("maze.json");
+                .getClassLoader()
+                .getResourceAsStream("maze.json");
         if (is == null) {
             System.out.println("open file failed");
             throw new RuntimeException("failed");
@@ -85,8 +85,14 @@ public class Router {
 
     @RequestMapping("/combat")
     public String combat(Model model) {
-        model.addAttribute("result",game.openCombat());
+//        model.addAttribute("result",game.openCombat());
         return "combat";
+    }
+
+    @ResponseBody
+    @RequestMapping("startCombat")
+    public HashMap<String, Object> startCombat() {
+        return game.openCombat();
     }
 
     @ResponseBody

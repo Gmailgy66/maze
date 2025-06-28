@@ -37,10 +37,15 @@ public class Combat {
         JSONArray bossArray = json.getJSONArray("B");
         JSONArray skillsArray = json.getJSONArray("PlayerSkills");
 
+        HashMap<String, Object> map = new HashMap<>();
+
+        map.put("PlayerSkills", skillsArray);
+
         int[] bossHP = new int[bossArray.length()];
         for (int i = 0; i < bossArray.length(); i++) {
             bossHP[i] = bossArray.getInt(i);
         }
+        map.put("Boss", bossHP);
 
         int[][] skills = new int[skillsArray.length()][2];
         for (int i = 0; i < skillsArray.length(); i++) {
@@ -55,10 +60,8 @@ public class Combat {
         output.put("min_turns", minTurns);
         output.put("actions", bestActions);
 
-        HashMap<String, Object> map = new HashMap<>();
-        for (String key : output.keySet()) {
-            map.put(key, output.get(key));
-        }
+        map.put("actions", bestActions);
+        map.put("PlayerSkills", skills);
         return map;
     }
 

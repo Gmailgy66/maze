@@ -8,9 +8,23 @@
 <body>
 <script th:src="@{/combat.js}"></script>
 <div class="container">
-    <p th:text="${result}"></p>
-    <button id="next-turn" onclick="handleNextTurn()">下一回合</button>
-    <button id="exit" onclick="exitCombat()" hidden="hidden">退出战斗</button>
+    <h2>Boss 战斗</h2>
+
+    <div class="section">
+        <h3>Boss 血量</h3>
+        <div id="boss-status"></div>
+    </div>
+
+    <div class="section">
+        <h3>玩家技能</h3>
+        <div id="skill-status"></div>
+    </div>
+
+    <div class="section">
+        <button id="start" onclick="startCombat()">开始战斗</button>
+        <button id="next-turn" onclick="handleNextTurn()" hidden>下一回合</button>
+        <button id="exit" onclick="exitCombat()" hidden>退出战斗</button>
+    </div>
 </div>
 </body>
 </html>
