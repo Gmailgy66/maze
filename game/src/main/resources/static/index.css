@@ -301,13 +301,13 @@ button:active {
 
 /* Enhanced hero movement animations - faster version */
 .hero-moving {
-    animation: heroMove 0.15s ease-in-out; /* Reduced from 0.3s */
+    animation: heroMove 0.01s ease-in-out; /* Reduced from 0.3s */
     transform-origin: center;
     z-index: 10;
 }
 
 .path-highlight {
-    transition: all 0.15s ease-in-out; /* Reduced from 0.3s */
+    transition: all 0.1s ease-in-out; /* Reduced from 0.3s */
     border: 2px solid rgba(255, 215, 0, 0.6);
 }
 

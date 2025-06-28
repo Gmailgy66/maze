@@ -1,34 +1,25 @@
 package com.caicai.game;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Scanner;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.caicai.game.combat.Combat;
-import com.caicai.game.common.PathFinder;
-import com.caicai.game.common.PathSolve;
-import com.caicai.game.common.Point;
-import com.caicai.game.common.Result;
-import com.caicai.game.common.ResultFactory;
+import com.caicai.game.common.*;
+import com.caicai.game.common.pathFinderImpl.GreedyPathFinder;
 import com.caicai.game.conf.GameConf;
 import com.caicai.game.maze.BlockType;
 import com.caicai.game.maze.Maze;
 import com.caicai.game.maze.MazeFactory;
 import com.caicai.game.role.Hero;
 import com.caicai.game.role.Skill;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -72,7 +63,8 @@ public class Game {
     }
 
     public Result init(InputStream is) {
-        String jsonStr = new Scanner(is, StandardCharsets.UTF_8).useDelimiter("\\A").next();
+        String jsonStr = new Scanner(is, StandardCharsets.UTF_8).useDelimiter("\\A")
+                                                                .next();
         JSONObject obj = new JSONObject(jsonStr);
         JSONArray mazeJson = obj.getJSONArray("maze");
         int rows = mazeJson.length();
@@ -137,7 +129,7 @@ public class Game {
             case SKILL -> Sk();
             case LOCKER -> L();
             default -> resultFactory.fail()
-                    .put("error", "Unknown block type: " + maze.getBlock(point));
+                                    .put("error", "Unknown block type: " + maze.getBlock(point));
         };
         maze.doStepOnPoint(point);
         curPos.setX((int) (Math.random() * gameConf.getSize()));
@@ -218,6 +210,12 @@ public class Game {
     public Result getFullPath() {
         PathSolve pathSolve = new PathSolve();
         List<Point> path = pathSolve.solve(maze);
+        return resultFactory.ok().put("path", path);
+    }
+
+    public Result getGreedyPath() {
+        GreedyPathFinder pathFinder = new GreedyPathFinder();
+        List<Point> path = pathFinder.solve(maze);
         return resultFactory.ok().put("path", path);
     }
 

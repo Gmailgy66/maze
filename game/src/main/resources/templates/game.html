@@ -78,7 +78,10 @@
                 <!-- Game Controls -->
                 <div class="button-container">
                     <button @click="handleSolve" :disabled="isLoading">
-                        {{ isLoading ? 'Solving...' : 'Solve Path' }}
+                        {{ isLoading ? 'Solving...' : 'Solve Path By Dp' }}
+                    </button>
+                    <button @click="handleSolveByGreedy" :disabled="isLoading">
+                        {{ isLoading ? 'Solving...' : 'Solve Path By Greedy' }}
                     </button>
                     <button @click="stepOne" :disabled="isLoading || segments.length === 0">
                         Step Forward

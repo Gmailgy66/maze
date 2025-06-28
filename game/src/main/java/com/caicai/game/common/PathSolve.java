@@ -82,14 +82,5 @@ public class PathSolve implements PathFinder {
         return profit;
     }
 
-    @Data
-    static class Ret {
-        Ret(List<Point> path, Integer pro) {
-            this.path = path;
-            this.pro = pro;
-        }
 
-        List<Point> path;
-        Integer pro;
-    }
 }

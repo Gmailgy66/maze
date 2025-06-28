@@ -58,7 +58,7 @@ public class Maze {
                 switch (board[i][j]) {
                     case GOLD -> {
                         gold.add(np);
-                        setScore(i, j, 10);
+                        setScore(i, j, 5);
                     }
                     case TRAP -> {
                         traps.add(np);

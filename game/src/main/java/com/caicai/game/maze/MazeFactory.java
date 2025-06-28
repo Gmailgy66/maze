@@ -49,7 +49,7 @@ public class MazeFactory {
      *
      * @return 迷宫对象
      */
-    private final double GBASE = 0.2;
+    private final double GBASE = 0.3;
     private final double SKBASE = 0.1;
     private final double TBASE = 0.1;
     private Integer MAXSP;
@@ -64,10 +64,10 @@ public class MazeFactory {
         // ! GOLD and TRAP and SKILLL will occupy no more than 40%
         double level = gameConf.getLevel() / 15.0;
         Random rand = new Random();
-        double v = rand.nextDouble(-0.05, 0.1);
-        maxBlockType.put(BlockType.GOLD, (int) ((GBASE - level + v) * size));
-        v = rand.nextDouble(-0.05, 0.1);
-        maxBlockType.put(BlockType.TRAP, (int) ((TBASE + level + v) * size));
+        double v = rand.nextDouble(-0.1, 0.05);
+        maxBlockType.put(BlockType.GOLD, (int) ((GBASE  + v) * size));
+        v = rand.nextDouble(-0.05, 0.05);
+        maxBlockType.put(BlockType.TRAP, (int) ((TBASE + v) * size));
         maxBlockType.put(BlockType.LOCKER, 1);
         maxBlockType.put(BlockType.BOSS, 1);
         maxBlockType.put(BlockType.EXIT, 1);

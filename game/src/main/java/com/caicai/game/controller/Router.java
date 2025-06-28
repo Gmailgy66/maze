@@ -71,9 +71,15 @@ public class Router {
     }
 
     @ResponseBody
-    @RequestMapping("/nextPointWithPath")
-    public Result nextPointWithPath() {
+    @RequestMapping("/dpPath")
+    public Result dpPath() {
         return game.getFullPath();
+    }
+
+    @ResponseBody
+    @RequestMapping("/greedyPath")
+    public Result greedyPath() {
+        return game.getGreedyPath();
     }
 
     @RequestMapping("/combat")

@@ -208,13 +208,36 @@ const vm = new Vue({
             const cellRef = this.$refs[`cell_${x}_${y}`];
             return cellRef && cellRef[0] ? cellRef[0] : null;
         },
+        async handleSolveByGreedy() {
+            console.log("Starting to solve the maze...");
+            this.error = null;
+            this.isLoading = true;
+            try {
+                const response = await fetch("/greedyPath");
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
+                const data = await response.json();
+                this.path = data.path || [];
+                this.segments = [];
+                this.curInd = -1;
+                console.log("Path data received:", this.path);
+                this.processPathSegments();
+                console.log("Path solved:", { path: this.path, segments: this.segments });
+            } catch (error) {
+                console.error("Failed to solve path:", error);
+                this.error = "Failed to solve the maze. Please try again.";
+            } finally {
+                this.isLoading = false;
+            }
+        },
         async handleSolve() {
             console.log("Starting to solve the maze...");
             this.isLoading = true;
             this.error = null;
             try {
-                const response = await fetch("/nextPointWithPath");
+                const response = await fetch("/dpPath");
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -247,7 +270,9 @@ const vm = new Vue({
                 // The GOLD should end a segment
                 this.segments[this.segments.length - 1].push(point);
                 if (this.isValidPosition(point.x, point.y) &&
-                    this.board[point.x][point.y] === "GOLD") {
+                    (this.board[point.x][point.y] === "GOLD"
+                        || this.board[point.x][point.y] === "BOSS"
+                        || this.board[point.x][point.y] === "EXIT")) {
                     this.segments.push([]);
                 }
             });

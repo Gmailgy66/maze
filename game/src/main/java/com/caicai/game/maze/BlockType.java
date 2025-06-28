@@ -2,12 +2,13 @@ package com.caicai.game.maze;
 
 import lombok.Getter;
 
-public enum BlockType {
+import java.util.Comparator;
+
+public enum BlockType implements Comparable<BlockType> {
     START("S"), EXIT("E"), WALL("#"), PATH("-"), TRAP("T"), GOLD("G", 10)
     // public static final int scorePlus = 10;
     , LOCKER("L"), BOSS("B"), // ENEMY("X"),
     SKILL("$");
-
     @Getter
     private final String signal;
 
@@ -20,6 +21,7 @@ public enum BlockType {
         }
     }
 
+
     public static final int GOLD_SCORE = 5;
     public static final int TRAP_SCORE = -3;
     @Getter
@@ -29,8 +31,22 @@ public enum BlockType {
         return type != WALL && type != PATH;
     }
 
+    public static int getOrder(BlockType type) {
+        return switch (type) {
+            case GOLD -> 10;
+            case TRAP -> -3;
+            default -> 0;
+        };
+    }
+
     public static int getTypeCnt() {
         return BlockType.values().length;
     }
 
+    static class CompareByScore implements Comparator<BlockType> {
+        @Override
+        public int compare(BlockType o1, BlockType o2) {
+            return Integer.compare(o1.getScore(), o2.getScore());
+        }
+    }
 }

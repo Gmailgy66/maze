@@ -1,12 +1,12 @@
 package com.caicai.game.maze;
 
-import java.util.List;
-
 import com.caicai.game.common.Point;
 
+import java.util.List;
+
 public class PointUtil {
-    static final int[] x_ = new int[] { 0, 0, 1, -1, 1, -1, 1, -1 };
-    static final int[] y_ = new int[] { -1, 1, 0, 0, 1, -1, -1, 1 };
+    static final int[] x_ = new int[]{0, 0, 1, -1, 1, -1, 1, -1};
+    static final int[] y_ = new int[]{-1, 1, 0, 0, 1, -1, -1, 1};
 
     public static List<Point> getSurrendPoints(Maze maze, Point point) {
         List<Point> points = new java.util.ArrayList<>();
@@ -25,7 +25,7 @@ public class PointUtil {
         for (int i = 0; i < 4; i++) {
             int x = point.getX() + x_[i];
             int y = point.getY() + y_[i];
-            if (x >= 1 && x <= maze.getValidSize() && y >= 1 && y <= maze.getValidSize()) {
+            if (x >= 1 && x <= maze.getValidSize() && y >= 1 && y <= maze.getValidSize() && maze.getBlock(x, y) != BlockType.WALL) {
                 points.add(new Point(x, y));
             }
         }
