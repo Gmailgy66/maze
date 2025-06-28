@@ -97,7 +97,7 @@ public class Router {
 
     @ResponseBody
     @RequestMapping("/quiz")
-    public Map<String, Object> quiz() {
+    public Map<String, Object> quiz() throws Exception {
         return new Question().start();
     }
 

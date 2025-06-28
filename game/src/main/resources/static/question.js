@@ -56,7 +56,6 @@ window.question = {
         return {
             question: '',
             answer: null,
-            finish: false
         }
     },
     mounted() {
@@ -70,10 +69,8 @@ window.question = {
     },
     methods: {
         startSolve(){
-            this.finish = true
-            document.getElementById('ipt1').value = this.answer[0]
-            document.getElementById('ipt2').value = this.answer[1]
-            document.getElementById('ipt3').value = this.answer[2]
+            document.getElementById('question').innerText = this.question
+            document.getElementById('output').innerText = this.answer
         },
         endGame() {
             this.$emit('close')
@@ -81,11 +78,9 @@ window.question = {
     },
     template: `
     <div class="quiz-box">
-      <p class="question">{{ question }}</p>
-      <div class="input-container">
-        <input id="ipt1" type="number" min="0" max="9" maxlength="1" class="digit-box">
-        <input id="ipt2" type="number" min="0" max="9" maxlength="1" class="digit-box">
-        <input id="ipt3" type="number" min="0" max="9" maxlength="1" class="digit-box">
+      <p id="question"></p>
+      <div class="result">
+        <p id="output"></p>
       </div>
       <button @click="startSolve">开始解答</button>
       <button v-if="finish" @click="endGame">结束</button>

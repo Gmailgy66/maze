@@ -28,29 +28,9 @@ public class Question {
         }
     }
 
-    public HashMap<String, Object> start() {
-        HashMap<String, Object> map = new HashMap<>();
-        // 随机生成三位数
-        int[] a = new int[3];
-        Set<Integer> nums = new HashSet<>();
-        Random random = new Random();
-        while (nums.size() < 3) {
-            int num = random.nextInt(10);
-            nums.add(num);
-        }
-        int i = 0;
-        for (Integer x : nums) {
-            a[i++] = x;
-        }
-        boolean[] used = new boolean[10];
-        String question = """
-                问题：
-                有一个三位数互不重复的排列，请你使用回溯法找出这个三位数，将答案填写在下方的方框中
-                """;
-        map.put("question", question);
-        ArrayList<Integer> ans = new ArrayList<>();
-        solve(a, ans, 0, used);
-        map.put("ans",ans);
+    public HashMap<String, Object> start() throws Exception {
+        PasswordSolver ps = new PasswordSolver();
+        HashMap<String, Object> map = ps.start();
         return map;
     }
 }
