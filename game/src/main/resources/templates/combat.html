@@ -50,7 +50,22 @@
                 <button id="start" onclick="startCombat()" class="btn-primary">🚀 开始战斗</button>
                 <button id="next-turn" onclick="handleNextTurn()" class="btn-secondary" hidden>⏭️ 下一回合</button>
                 <button id="auto-play" onclick="toggleAutoPlay()" class="btn-info" hidden>▶️ 自动播放</button>
+                <button id="restart" onclick="restartCombat()" class="btn-warning" hidden>🔄 重新开始</button>
                 <button id="exit" onclick="exitCombat()" class="btn-danger" hidden>🚪 退出战斗</button>
+            </div>
+
+            <!-- Auto-Play Speed Controls -->
+            <div id="auto-controls" class="auto-controls" hidden>
+                <h4>⚡ 自动播放控制</h4>
+                <div class="speed-control">
+                    <label for="speed-slider" id="speed-label">速度: 正常 (1500ms)</label>
+                    <input type="range" id="speed-slider" min="100" max="3000" step="100" value="1500"
+                        onchange="setAutoPlaySpeed(this.value); updateSpeedDisplay()">
+                    <div class="speed-labels">
+                        <span>极快 (100ms)</span>
+                        <span>极慢 (3000ms)</span>
+                    </div>
+                </div>
             </div>
         </div>
 

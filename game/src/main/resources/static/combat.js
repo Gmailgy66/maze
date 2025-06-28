@@ -6,6 +6,7 @@ let currentBoss = 0;
 let selectedFile = null;
 let isAutoPlaying = false;
 let autoPlayTimer = null;
+let autoPlaySpeed = 1500; // Default speed in milliseconds
 
 function initFromRawData(skillsArray) {
     return skillsArray.map(skill => ({
@@ -48,6 +49,7 @@ async function uploadBossFile() {
             const result = await response.json();
             alert("Boss配置上传成功！");
             console.log("Upload result:", result);
+            clearCombatData(); // Clear old data after successful upload
         } else {
             alert("上传失败，请检查文件格式");
         }
@@ -65,8 +67,9 @@ async function useDefaultBoss() {
 
         if (response.ok) {
             const result = await response.json();
-            alert("默认Boss配置加载成功！");
+            // alert("默认Boss配置加载成功！");
             console.log("Default boss loaded:", result);
+            clearCombatData(); // Clear old data after successful load
         } else {
             alert("加载默认配置失败");
         }
@@ -74,6 +77,42 @@ async function useDefaultBoss() {
         console.error("Load default error:", error);
         alert("加载失败：" + error.message);
     }
+}
+
+function clearCombatData() {
+    // Reset all combat state variables
+    bossHP = [];
+    playerSkills = [];
+    actions = [];
+    turn = 0;
+    currentBoss = 0;
+
+    // Stop auto-play if running
+    stopAutoPlay();
+
+    // Reset UI to initial state
+    document.getElementById("start").hidden = false;
+    document.getElementById("next-turn").hidden = true;
+    document.getElementById("auto-play").hidden = true;
+    document.getElementById("auto-controls").hidden = true;
+    document.getElementById("exit").hidden = true;
+    document.getElementById("combat-stats").hidden = true;
+    document.getElementById("restart").hidden = true;
+
+    // Clear displays
+    document.getElementById("skill-sequence").innerHTML = "";
+    document.getElementById("skill-status").innerHTML = "";
+    document.getElementById("boss-status").innerHTML = "";
+
+    console.log("Combat data cleared");
+}
+
+function restartCombat() {
+    clearCombatData();
+    startCombat();
+    // no comfirm needed
+    // if (confirm("确定要重新开始战斗吗？当前进度将丢失。")) {
+    // }
 }
 
 function updateDisplay() {
@@ -103,7 +142,7 @@ function updateBossDisplay() {
     bossDiv.innerHTML = "";
     bossHP.forEach((hp, i) => {
         const div = document.createElement("div");
-        div.className = `boss ${hp <= 0 ? 'defeated' : ''}`;
+        div.className = `boss ${hp <= 0 ? 'defeated' : ''} ${i === currentBoss && hp > 0 ? 'current-target' : ''}`;
         div.innerHTML = `
             🦖 Boss ${i + 1}<br>
             ❤️ HP: ${hp}
@@ -118,6 +157,31 @@ function updateStats() {
     document.getElementById("current-turn").textContent = turn;
     document.getElementById("defeated-bosses").textContent = bossHP.filter(hp => hp <= 0).length;
     document.getElementById("remaining-bosses").textContent = bossHP.filter(hp => hp > 0).length;
+}
+
+function setAutoPlaySpeed(speed) {
+    autoPlaySpeed = parseInt(speed);
+
+    // If auto-play is currently running, restart it with new speed
+    if (isAutoPlaying) {
+        stopAutoPlay();
+        startAutoPlay();
+    }
+}
+
+function getSpeedLabel(speed) {
+    if (speed <= 300) return "极快";
+    if (speed <= 700) return "快速";
+    if (speed <= 1500) return "正常";
+    if (speed <= 2500) return "慢速";
+    return "极慢";
+}
+
+function updateSpeedDisplay() {
+    const speedLabel = document.getElementById("speed-label");
+    if (speedLabel) {
+        speedLabel.textContent = `速度: ${getSpeedLabel(autoPlaySpeed)} (${autoPlaySpeed}ms)`;
+    }
 }
 
 function reduceCooldowns() {
@@ -137,6 +201,9 @@ function handleNextTurn() {
         return;
     }
 
+    // Store the target boss before applying damage
+    const targetBoss = currentBoss;
+
     skill.currentCooldown = skill.cooldown;
     bossHP[currentBoss] -= skill.damage;
     if (bossHP[currentBoss] < 0) bossHP[currentBoss] = 0;
@@ -151,7 +218,12 @@ function handleNextTurn() {
 
     const seqDiv = document.getElementById("skill-sequence");
     const span = document.createElement("span");
-    span.textContent = `技能 ${skillIndex}`;
+    span.className = "action-item";
+    span.innerHTML = `
+        <span class="skill-info">技能 ${skillIndex}</span>
+        <span class="target-info">→ Boss ${targetBoss + 1}</span>
+        <span class="damage-info">-${skill.damage}</span>
+    `;
     seqDiv.appendChild(span);
 
     if (turn >= actions.length || currentBoss >= bossHP.length) {
@@ -187,7 +259,7 @@ function startAutoPlay() {
             return;
         }
         handleNextTurn();
-    }, 1500); // 1.5秒间隔
+    }, autoPlaySpeed);
 }
 
 function stopAutoPlay() {
@@ -220,11 +292,14 @@ function startCombat() {
             document.getElementById("start").hidden = true;
             document.getElementById("next-turn").hidden = false;
             document.getElementById("auto-play").hidden = false;
+            document.getElementById("auto-controls").hidden = false;
+            document.getElementById("restart").hidden = false;
             document.getElementById("exit").hidden = true;
             document.getElementById("combat-stats").hidden = false;
             document.getElementById("skill-sequence").innerHTML = "";
 
             updateDisplay();
+            updateSpeedDisplay();
         })
         .catch(error => {
             console.error("战斗初始化失败:", error);
