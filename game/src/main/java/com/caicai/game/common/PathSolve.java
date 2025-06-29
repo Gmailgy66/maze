@@ -35,14 +35,13 @@ public class PathSolve implements PathFinder {
         if (root == null || !onTheRoad.containsKey(root)) {
             return false;
         }
-        if (root.equals(maze.getEXIT())) {
+        boolean res = false;
+        if (res |= root.equals(maze.getEXIT())) {
             toExit.add(root);
-            return true;
         }
         Integer subPoints = onTheRoad.get(root);
         int x = root.getX();
         int y = root.getY();
-        boolean res = false;
         for (int i = 0; i < 4; i++) {
             if ((subPoints & (1 << i)) > 0) {
                 path.add(root);
