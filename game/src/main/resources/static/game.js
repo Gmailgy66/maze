@@ -16,7 +16,7 @@ const vm = new Vue({
             'TRAP': '☠️',
             'EXIT': '🔚',
             'BOSS': '🦖',
-            'LOCKER': '🔞',
+            'LOCKER': '❔',
             'GOLD_COLLECTED': '💰',  // Mask for collected gold
             'SKILL_COLLECTED': '⚡',  // Mask for collected skill
             'TRAP_TRIGGERED': '💀'   // Mask for triggered trap
@@ -224,7 +224,7 @@ const vm = new Vue({
                 this.curInd = -1;
                 console.log("Path data received:", this.path);
                 this.processPathSegments();
-                console.log("Path solved:", {path: this.path, segments: this.segments});
+                console.log("Path solved:", { path: this.path, segments: this.segments });
             } catch (error) {
                 console.error("Failed to solve path:", error);
                 this.error = "Failed to solve the maze. Please try again.";
@@ -250,7 +250,7 @@ const vm = new Vue({
                 console.log("Path data received:", this.path);
                 this.processPathSegments();
 
-                console.log("Path solved:", {path: this.path, segments: this.segments});
+                console.log("Path solved:", { path: this.path, segments: this.segments });
             } catch (error) {
                 console.error("Failed to solve path:", error);
                 this.error = "Failed to solve the maze. Please try again.";
@@ -357,7 +357,7 @@ const vm = new Vue({
                     }
 
                     // Update hero position
-                    this.heroPos = {x: point.x, y: point.y};
+                    this.heroPos = { x: point.x, y: point.y };
 
                     // Add movement animation to new position
                     const cell = this.getCell(point.x, point.y);
@@ -411,7 +411,7 @@ const vm = new Vue({
                     }
 
                     // Update hero position
-                    this.heroPos = {x: point.x, y: point.y};
+                    this.heroPos = { x: point.x, y: point.y };
 
                     // Add movement animation to new position
                     const cell = this.getCell(point.x, point.y);

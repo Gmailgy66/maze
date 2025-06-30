@@ -19,6 +19,7 @@ public class PathSolve implements PathFinder {
     Map<Point, Point> par = new HashMap<>();
     Map<Point, Integer> onTheRoad = new HashMap<>();
     List<Point> toExit = new ArrayList<>();
+    Map<Point, Integer> profitFromRoot = new HashMap<>();
 
     public List<Point> solve(Maze maze) {
         vis = new boolean[maze.getBoardSize()][maze.getBoardSize()];
@@ -60,6 +61,10 @@ public class PathSolve implements PathFinder {
     }
 
     public int dfs(Maze maze, Point now) {
+//        ! actually the same state will not be visited again
+//        if(isInPath.containsKey(now) && IsInPath.get(now)) {
+//        return
+//    }
         int x = now.getX();
         int y = now.getY();
 //        ! the root is not marked as visited so it will cause a extra visit
@@ -77,7 +82,8 @@ public class PathSolve implements PathFinder {
         for (int i = 0; i < 4; i++) {
             int nx = x + mov[i].getX();
             int ny = y + mov[i].getY();
-            if (nx >= 0 && nx < maze.getBoardSize() && ny >= 0 && ny < maze.getBoardSize() && maze.getBlock(nx, ny) != BlockType.WALL && !vis[nx][ny]) {
+            if (nx >= 0 && nx < maze.getBoardSize() && ny >= 0 && ny < maze.getBoardSize() && maze.getBlock(
+                    nx, ny) != BlockType.WALL && !vis[nx][ny]) {
                 vis[nx][ny] = true;
                 int subPro = dfs(maze, new Point(nx, ny));
                 if (subPro > 0) {
