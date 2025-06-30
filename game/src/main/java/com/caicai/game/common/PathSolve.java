@@ -73,7 +73,7 @@ public class PathSolve implements PathFinder {
         int profit = 0;
         int subPoints = 0000;
         if (maze.getBlock(x, y) == BlockType.GOLD) {
-            profit += maze.GOLD_SCORE;
+            profit += Maze.GOLD_SCORE;
         } else if (maze.getBlock(x, y) == BlockType.TRAP) {
             profit += maze.TRAP_SCORE;
         } else if (maze.getBlock(x, y) == BlockType.EXIT) {

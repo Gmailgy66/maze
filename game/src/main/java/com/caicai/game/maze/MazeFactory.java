@@ -1,25 +1,20 @@
 package com.caicai.game.maze;
 
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
+import com.caicai.game.common.Point;
+import com.caicai.game.conf.GameConf;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.caicai.game.common.Point;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+
 import static com.caicai.game.common.RandUtil.randEven;
 import static com.caicai.game.common.RandUtil.randOdd;
-import com.caicai.game.conf.GameConf;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 迷宫生成工厂类
@@ -106,7 +101,8 @@ public class MazeFactory {
         StringBuilder formatted = new StringBuilder();
         formatted.append("{\n  \"maze\": [\n");
         for (int i = 0; i < vJSONArray.length(); i++) {
-            formatted.append("    ").append(vJSONArray.getJSONArray(i).toString());
+            formatted.append("    ")
+                     .append(vJSONArray.getJSONArray(i).toString());
             if (i < vJSONArray.length() - 1) {
                 formatted.append(",");
             }
@@ -117,7 +113,7 @@ public class MazeFactory {
         System.out.println(formatted.toString());
 
         try {
-            FileWriter fw = new FileWriter( "maze.json");
+            FileWriter fw = new FileWriter("maze.json");
             fw.write(formatted.toString());
             fw.close();
         } catch (IOException e) {
@@ -168,9 +164,9 @@ public class MazeFactory {
         maxBlockType.put(BlockType.BOSS, 1);
         maxBlockType.put(BlockType.EXIT, 1);
         maxBlockType.put(BlockType.START, 1);
-        maxBlockType.put(BlockType.SKILL,
-                (int) Math.min((int) ((SKBASE + level) * size),
-                        level * 2 + 1));
+//        maxBlockType.put(BlockType.SKILL,
+//                (int) Math.min((int) ((SKBASE + level) * size),
+//                        level * 2 + 1));
     }
 
     /**
@@ -189,9 +185,9 @@ public class MazeFactory {
             // get a random path// 使用Stream API
             Set<Point> paths = maze.getPaths();
             Point randomPoint = paths.stream()
-                    .skip(new Random().nextInt(paths.size()))
-                    .findFirst()
-                    .orElse(null);
+                                     .skip(new Random().nextInt(paths.size()))
+                                     .findFirst()
+                                     .orElse(null);
             paths.remove(randomPoint);
             maze.setBlock(randomPoint, BlockType.START);
             maze.setSTART(randomPoint);
@@ -199,25 +195,25 @@ public class MazeFactory {
         if (maze.getEXIT() == null) {
             Set<Point> paths = maze.getPaths();
             Point randomPoint = paths.stream()
-                    .skip(new Random().nextInt(paths.size()))
-                    .findFirst()
-                    .orElse(null);
+                                     .skip(new Random().nextInt(paths.size()))
+                                     .findFirst()
+                                     .orElse(null);
             paths.remove(randomPoint);
             maze.setBlock(randomPoint, BlockType.EXIT);
             maze.setEXIT(randomPoint);
             log.error("Maze has no exit point");
         }
-        // if (maze.getEXIT() == null) {
-        // Set<Point> paths = maze.getPaths();
-        // Point randomPoint = paths.stream()
-        // .skip(new Random().nextInt(paths.size()))
-        // .findFirst()
-        // .orElse(null);
-        // paths.remove(randomPoint);
-        // maze.setBlock(randomPoint, BlockType.EXIT);
-        // maze.setEXIT(randomPoint);
-        // log.error("Maze has no exit point");
-        // }
+        if (maze.getBossPoint() == null) {
+            Set<Point> paths = maze.getPaths();
+            Point randomPoint = paths.stream()
+                                     .skip(new Random().nextInt(paths.size()))
+                                     .findFirst()
+                                     .orElse(null);
+            paths.remove(randomPoint);
+            maze.setBlock(randomPoint, BlockType.BOSS);
+            maze.setBossPoint(randomPoint);
+            log.error("Maze has no exit point");
+        }
     }
 
     /**
@@ -297,10 +293,10 @@ public class MazeFactory {
         }
 
         // 在隔墙上创建四个随机通道点，并在其中随机选择一个不设置（即保留为通道）
-        Point[] points = { new Point(xPos, randOdd(yPos, y + width)),
-                new Point(xPos, randOdd(y, yPos)),
-                new Point(randOdd(x, xPos), yPos),
-                new Point(randOdd(xPos, x + height), yPos) };
+        Point[] points = {new Point(xPos, randOdd(yPos, y + width)),
+                          new Point(xPos, randOdd(y, yPos)),
+                          new Point(randOdd(x, xPos), yPos),
+                          new Point(randOdd(xPos, x + height), yPos)};
         int jump = r.nextInt(0, 4);
         // doDraw(xPos, yPos, points, jump, maze);
 

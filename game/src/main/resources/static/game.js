@@ -101,7 +101,7 @@ const vm = new Vue({
                 case 'TRAP':
                     return -3;
                 case 'SKILL':
-                    return 1; // Small bonus for collecting skills
+                    return 0; // Small bonus for collecting skills
                 default:
                     return 0;
             }
@@ -148,7 +148,7 @@ const vm = new Vue({
                     this.trapsTriggered++;
                     break;
                 case 'SKILL':
-                    scoreChange = 1;
+                    scoreChange = 0;
                     newCellType = 'SKILL_COLLECTED';
                     reason = 'Skill collected';
                     this.skillsCollected++;
