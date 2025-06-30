@@ -94,13 +94,13 @@ public class Combat {
             if (current.turn >= minTurns)
                 continue;
 
-            // 构造唯一状态 key（用于去重）
+            // 构造唯一状态 key（去重）
             String stateKey = Arrays.toString(current.bossHP) + Arrays.toString(current.cooldowns);
             if (visited.contains(stateKey))
                 continue;
             visited.add(stateKey);
 
-            // 当前目标 boss（顺序击败）
+            // 当前目标 boss
             int currentBoss = 0;
             while (currentBoss < current.bossHP.length && current.bossHP[currentBoss] <= 0) {
                 currentBoss++;
