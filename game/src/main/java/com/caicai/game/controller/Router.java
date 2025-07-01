@@ -1,9 +1,10 @@
 package com.caicai.game.controller;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.caicai.game.Game;
+import com.caicai.game.common.Result;
+import com.caicai.game.conf.GameConf;
+import com.caicai.game.quiz.Question;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,12 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.caicai.game.Game;
-import com.caicai.game.common.Result;
-import com.caicai.game.conf.GameConf;
-import com.caicai.game.quiz.Question;
-
-import lombok.extern.slf4j.Slf4j;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -58,8 +56,8 @@ public class Router {
     @RequestMapping("/loadMaze")
     public Result loadMaze() {
         InputStream is = this.getClass()
-                .getClassLoader()
-                .getResourceAsStream("maze.json");
+                             .getClassLoader()
+                             .getResourceAsStream("maze.json");
         if (is == null) {
             System.out.println("open file failed");
             throw new RuntimeException("failed");
@@ -111,33 +109,37 @@ public class Router {
 
     @PostMapping("/uploadBossConfig")
     @ResponseBody
-    public Result uploadBossConfig(@RequestParam("bossFile") MultipartFile bossFile) throws Exception {
+    public Map<String, Object> uploadBossConfig(@RequestParam("bossFile") MultipartFile bossFile) throws Exception {
         if (bossFile.isEmpty()) {
             return Result.fail().put("msg", "Boss file is empty");
         }
-
         try {
             return game.initBossConfig(bossFile.getInputStream());
         } catch (Exception e) {
             log.error("Failed to upload boss config", e);
-            return Result.fail().put("msg", "Failed to process boss configuration: " + e.getMessage());
+            return Result.fail()
+                         .put("msg",
+                              "Failed to process boss configuration: " + e.getMessage());
         }
     }
 
     @PostMapping("/loadDefaultBoss")
     @ResponseBody
-    public Result loadDefaultBoss() {
+    public Map<String, Object> loadDefaultBoss() {
         try {
             InputStream is = this.getClass()
-                    .getClassLoader()
-                    .getResourceAsStream("boss_battle.json");
+                                 .getClassLoader()
+                                 .getResourceAsStream("boss_battle.json");
             if (is == null) {
-                return Result.fail().put("msg", "Default boss config not found");
+                return Result.fail()
+                             .put("msg", "Default boss config not found");
             }
             return game.initBossConfig(is);
         } catch (Exception e) {
             log.error("Failed to load default boss config", e);
-            return Result.fail().put("msg", "Failed to load default boss configuration: " + e.getMessage());
+            return Result.fail()
+                         .put("msg",
+                              "Failed to load default boss configuration: " + e.getMessage());
         }
     }
 }

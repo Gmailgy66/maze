@@ -280,7 +280,17 @@ function exitCombat() {
 }
 
 function startCombat() {
-    fetch("/startCombat")
+    if (!selectedFile) {
+        alert("请选择一个文件");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('bossFile', selectedFile);
+    fetch('/uploadBossConfig', {
+        method: 'POST',
+        body: formData
+    })
         .then(response => response.json())
         .then(data => {
             bossHP = [...data.Boss];
