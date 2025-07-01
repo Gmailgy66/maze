@@ -54,8 +54,8 @@ window.question = {
     name: 'question',
     data() {
         return {
-            question: '',
-            answer: null,
+            result: '',
+            totalTries: 0,
         }
     },
     mounted() {
@@ -63,14 +63,14 @@ window.question = {
         fetch("http://localhost:8080/quiz")
             .then(res => res.json())
             .then(data => {
-                this.question = data.question
-                this.answer = data.ans
+                this.totalTries = data.totalTries
+                this.result = data.result
             })
     },
     methods: {
         startSolve(){
-            document.getElementById('question').innerText = this.question
-            document.getElementById('output').innerText = this.answer
+            document.getElementById('totalTries').innerText = "总尝试次数:" + this.totalTries
+            document.getElementById('output').innerText = this.result
         },
         endGame() {
             this.$emit('close')
@@ -78,9 +78,9 @@ window.question = {
     },
     template: `
     <div class="quiz-box">
-      <p id="question"></p>
       <div class="result">
         <p id="output"></p>
+        <p id="totalTries"></p>
       </div>
       <button @click="startSolve">开始解答</button>
       <button v-if="finish" @click="endGame">结束</button>

@@ -104,7 +104,7 @@ public class Router {
     }
 
     // 待会删掉
-    @RequestMapping("/test")
+    @RequestMapping("/question")
     public String test() {
         return "test";
     }

@@ -94,7 +94,6 @@ public class Combat {
             if (current.turn >= minTurns)
                 continue;
 
-            // 构造唯一状态 key（去重）
             String stateKey = Arrays.toString(current.bossHP) + Arrays.toString(current.cooldowns);
             if (visited.contains(stateKey))
                 continue;
