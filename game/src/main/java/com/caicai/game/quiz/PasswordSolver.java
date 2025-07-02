@@ -19,74 +19,74 @@ public class PasswordSolver {
     private static String targetHash;
     private static List<int[]> clues;
 
-    public int solveFromFile(File filename) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree(filename);
-        targetHash = root.get("L").asText();
-
-        clues = new ArrayList<>();
-        for (JsonNode clue : root.get("C")) {
-            int[] c = new int[clue.size()];
-            for (int i = 0; i < clue.size(); i++) c[i] = clue.get(i).asInt();
-            clues.add(c);
-        }
-
-        // 三种方式分别求出尝试次数
-        int tries1 = runBacktrackingCountOnly(0, 1);
-        int tries2 = runBacktrackingCountOnly(9, -1);
-        int tries3 = runCluePriorityCountOnly();
-
-        // 返回最小尝试次数
-        return Math.min(tries1, Math.min(tries2, tries3));
-    }
-
-    // 简化版本：只返回尝试次数，不记录日志
-    private int runBacktrackingCountOnly(int startDigit, int step) throws Exception {
-        int[] tries = {0};
-        boolean[] found = {false};
-        backtrackCountOnly(new ArrayList<>(), startDigit, step, tries, found);
-        return found[0] ? tries[0] : Integer.MAX_VALUE;
-    }
-
-    private void backtrackCountOnly(List<Integer> path, int startDigit, int step, int[] tries, boolean[] found) throws Exception {
-        if (path.size() == 3) {
-            int[] pwd = {path.get(0), path.get(1), path.get(2)};
-            if (!satisfyAllClues(pwd)) return;
-            tries[0]++;
-            String pwdStr = "" + pwd[0] + pwd[1] + pwd[2];
-            String hash = hashPassword(pwdStr);
-            if (hash.equalsIgnoreCase(targetHash)) {
-                found[0] = true;
-            }
-            return;
-        }
-        for (int i = startDigit; i >= 0 && i <= 9; i += step) {
-            path.add(i);
-            backtrackCountOnly(path, startDigit, step, tries, found);
-            path.remove(path.size() - 1);
-            if (found[0]) return;
-        }
-    }
-
-    private int runCluePriorityCountOnly() throws Exception {
-        List<int[]> candidates = new ArrayList<>();
-        for (int i = 0; i <= 9; i++)
-            for (int j = 0; j <= 9; j++)
-                for (int k = 0; k <= 9; k++)
-                    candidates.add(new int[]{i, j, k});
-
-        candidates.sort((a, b) -> Integer.compare(countClueMatches(b), countClueMatches(a)));
-
-        int tries = 0;
-        for (int[] pwd : candidates) {
-            if (!satisfyAllClues(pwd)) continue;
-            tries++;
-            String pwdStr = "" + pwd[0] + pwd[1] + pwd[2];
-            String hash = hashPassword(pwdStr);
-            if (hash.equalsIgnoreCase(targetHash)) return tries;
-        }
-        return Integer.MAX_VALUE;
-    }
+//    public int solveFromFile(File filename) throws Exception {
+//        ObjectMapper mapper = new ObjectMapper();
+//        JsonNode root = mapper.readTree(filename);
+//        targetHash = root.get("L").asText();
+//
+//        clues = new ArrayList<>();
+//        for (JsonNode clue : root.get("C")) {
+//            int[] c = new int[clue.size()];
+//            for (int i = 0; i < clue.size(); i++) c[i] = clue.get(i).asInt();
+//            clues.add(c);
+//        }
+//
+//        // 三种方式分别求出尝试次数
+//        int tries1 = runBacktrackingCountOnly(0, 1);
+//        int tries2 = runBacktrackingCountOnly(9, -1);
+//        int tries3 = runCluePriorityCountOnly();
+//
+//        // 返回最小尝试次数
+//        return Math.min(tries1, Math.min(tries2, tries3));
+//    }
+//
+//    // 简化版本：只返回尝试次数，不记录日志
+//    private int runBacktrackingCountOnly(int startDigit, int step) throws Exception {
+//        int[] tries = {0};
+//        boolean[] found = {false};
+//        backtrackCountOnly(new ArrayList<>(), startDigit, step, tries, found);
+//        return found[0] ? tries[0] : Integer.MAX_VALUE;
+//    }
+//
+//    private void backtrackCountOnly(List<Integer> path, int startDigit, int step, int[] tries, boolean[] found) throws Exception {
+//        if (path.size() == 3) {
+//            int[] pwd = {path.get(0), path.get(1), path.get(2)};
+//            if (!satisfyAllClues(pwd)) return;
+//            tries[0]++;
+//            String pwdStr = "" + pwd[0] + pwd[1] + pwd[2];
+//            String hash = hashPassword(pwdStr);
+//            if (hash.equalsIgnoreCase(targetHash)) {
+//                found[0] = true;
+//            }
+//            return;
+//        }
+//        for (int i = startDigit; i >= 0 && i <= 9; i += step) {
+//            path.add(i);
+//            backtrackCountOnly(path, startDigit, step, tries, found);
+//            path.remove(path.size() - 1);
+//            if (found[0]) return;
+//        }
+//    }
+//
+//    private int runCluePriorityCountOnly() throws Exception {
+//        List<int[]> candidates = new ArrayList<>();
+//        for (int i = 0; i <= 9; i++)
+//            for (int j = 0; j <= 9; j++)
+//                for (int k = 0; k <= 9; k++)
+//                    candidates.add(new int[]{i, j, k});
+//
+//        candidates.sort((a, b) -> Integer.compare(countClueMatches(b), countClueMatches(a)));
+//
+//        int tries = 0;
+//        for (int[] pwd : candidates) {
+//            if (!satisfyAllClues(pwd)) continue;
+//            tries++;
+//            String pwdStr = "" + pwd[0] + pwd[1] + pwd[2];
+//            String hash = hashPassword(pwdStr);
+//            if (hash.equalsIgnoreCase(targetHash)) return tries;
+//        }
+//        return Integer.MAX_VALUE;
+//    }
 
     public HashMap<String, Object> start() throws Exception {
         HashMap<String, Object> map = new HashMap<>();
