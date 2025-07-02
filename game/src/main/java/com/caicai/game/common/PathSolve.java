@@ -38,7 +38,8 @@ public class PathSolve implements PathFinder {
         path.addAll(toBoss);
         path.addAll(toLocker);
         path.addAll(toExit);
-        profit -= BlockType.FAKE_EXIT_SCORE - BlockType.FAKE_LOCKER_SCORE - BlockType.FAKE_BOSS_SCORE;
+        profit = dp[maze.getSTART().getX()][maze.getSTART().getY()];
+        profit -= BlockType.FAKE_EXIT_SCORE + BlockType.FAKE_LOCKER_SCORE + BlockType.FAKE_BOSS_SCORE;
         System.out.println("path is " + path);
         System.out.println("max profit is :" + profit);
         return path;
