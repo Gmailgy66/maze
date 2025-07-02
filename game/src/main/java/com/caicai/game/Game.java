@@ -86,6 +86,9 @@ public class Game {
                 } else if (t.equals("E")) {
                     maze.setEXIT(new Point(i + 1, j + 1));
                     maze.board[i + 1][j + 1] = BlockType.EXIT;
+                } else if (t.equals("B")) {
+                    maze.setBossPoint(new Point(i + 1, j + 1));
+                    maze.board[i + 1][j + 1] = BlockType.BOSS;
                 } else if (t.equals("T")) {
                     maze.board[i + 1][j + 1] = BlockType.TRAP;
                 } else if (t.equals("L")) {
@@ -99,6 +102,7 @@ public class Game {
         hero = new Hero();
         curPos = maze.getSTART();
         baseFields.put("hero", hero);
+        baseFields.put("position", curPos);
         baseFields.put("curPos", curPos);
         baseFields.put("maze", maze);
         return resultFactory.ok();

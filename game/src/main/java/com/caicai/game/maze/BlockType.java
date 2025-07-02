@@ -47,9 +47,9 @@ public enum BlockType implements Comparable<BlockType> {
     }
 
     /** 金币的分数常量 */
-    public static final int GOLD_SCORE = 5;
+    public static final int GOLD_SCORE = 50;
     /** 陷阱的分数常量 */
-    public static final int TRAP_SCORE = -3;
+    public static final int TRAP_SCORE = -30;
     /** 假出口的分数常量 */
     public static final int FAKE_EXIT_SCORE = 9999;
     public static final int FAKE_BOSS_SCORE = 9999;

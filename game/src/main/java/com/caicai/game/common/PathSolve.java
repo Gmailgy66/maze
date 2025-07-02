@@ -4,10 +4,7 @@ import com.caicai.game.maze.BlockType;
 import com.caicai.game.maze.Maze;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class PathSolve implements PathFinder {
@@ -22,17 +19,25 @@ public class PathSolve implements PathFinder {
     List<Point> toLocker = new ArrayList<>();
     List<Point> toBoss = new ArrayList<>();
     Map<Point, Integer> profitFromRoot = new HashMap<>();
+    long dp[][];
 
     public List<Point> solve(Maze maze) {
-        vis = new boolean[maze.getBoardSize()][maze.getBoardSize()];
-        int profit = dfs(maze, maze.getSTART());
+        int boardSize = maze.getBoardSize();
+        vis = new boolean[boardSize][boardSize];
+        dp = new long[boardSize][boardSize];
+        for (int i = 0; i < boardSize; i++) {
+            Arrays.fill(dp[i], Integer.MIN_VALUE);
+        }
+        long profit = byDp(maze, maze.getSTART());
+
         buildRoad(maze, maze.getSTART());
-        path.addAll(toBoss.reversed());
+        toBoss   = getBestWayByAStar(maze, maze.getSTART(), maze.getBossPoint());
+        toLocker = getBestWayByAStar(maze, maze.getBossPoint(), maze.getLOCKER());
+        toExit = getBestWayByAStar(maze, maze.getLOCKER(), maze.getEXIT());
         path.addAll(toBoss);
-        path.addAll(toLocker.reversed());
         path.addAll(toLocker);
-        path.addAll(toExit.reversed());
-        profit -= BlockType.FAKE_EXIT_SCORE;
+        path.addAll(toExit);
+        profit -= BlockType.FAKE_EXIT_SCORE - BlockType.FAKE_LOCKER_SCORE - BlockType.FAKE_BOSS_SCORE;
         System.out.println("path is " + path);
         System.out.println("max profit is :" + profit);
         return path;
@@ -63,19 +68,19 @@ public class PathSolve implements PathFinder {
                 path.add(root);
                 int nx = x + mov[i].getX();
                 int ny = y + mov[i].getY();
-                int subRes= buildRoad(maze, new Point(nx, ny));
-                res|=subRes;
-                if ((res & 1) != 0) {
-                    toExit.add(root);
-                }
-                if ((res & 2) != 0) {
-                    toLocker.add(root);
-                }
-                if ((res & 4) != 0) {
-                    toBoss.add(root);
-                }
+                int subRes = buildRoad(maze, new Point(nx, ny));
+                res |= subRes;
                 path.add(root);
             }
+        }
+        if ((res & 1) != 0) {
+            toExit.add(root);
+        }
+        if ((res & 2) != 0) {
+            toLocker.add(root);
+        }
+        if ((res & 4) != 0) {
+            toBoss.add(root);
         }
         if (!root.equals(path.getLast())) {
             path.add(root);
@@ -85,28 +90,14 @@ public class PathSolve implements PathFinder {
 
     public int dfs(Maze maze, Point now) {
 //        ! actually the same state will not be visited again
-//        if(isInPath.containsKey(now) && IsInPath.get(now)) {
-//        return
-//    }
         int x = now.getX();
         int y = now.getY();
 //        ! the root is not marked as visited so it will cause a extra visit
         vis[x][y] = true;
-        List<Point> vList = new ArrayList();
-        int profit = 0;
+        int profit = getProfit(maze, maze.getBlock(x, y));
         int subPoints = 0000;
         BlockType type = maze.getBlock(x, y);
-        if (type == BlockType.GOLD) {
-            profit += Maze.GOLD_SCORE;
-        } else if (type == BlockType.TRAP) {
-            profit += maze.TRAP_SCORE;
-        } else if (type == BlockType.EXIT) {
-            profit += BlockType.FAKE_EXIT_SCORE;
-        } else if (type == BlockType.LOCKER) {
-            profit += BlockType.FAKE_LOCKER_SCORE;
-        } else if (type == BlockType.BOSS) {
-            profit += BlockType.FAKE_BOSS_SCORE;
-        }
+        profit = getProfit(maze, type);
         for (int i = 0; i < 4; i++) {
             int nx = x + mov[i].getX();
             int ny = y + mov[i].getY();
@@ -126,5 +117,54 @@ public class PathSolve implements PathFinder {
         return profit;
     }
 
+    private static int getProfit(Maze maze, BlockType type) {
+        if (type == BlockType.GOLD) {
+            return Maze.GOLD_SCORE;
+        } else if (type == BlockType.TRAP) {
+            return maze.TRAP_SCORE;
+        } else if (type == BlockType.EXIT) {
+            return BlockType.FAKE_EXIT_SCORE;
+        } else if (type == BlockType.LOCKER) {
+            return BlockType.FAKE_LOCKER_SCORE;
+        } else if (type == BlockType.BOSS) {
+            return BlockType.FAKE_BOSS_SCORE;
+        }
+        return 0;
+    }
 
+    public long byDp(Maze maze, Point now) {
+//        ! actually the same state will not be visited again
+        int x = now.getX();
+        int y = now.getY();
+//        ! the root is not marked as visited so it will cause a extra visit
+        if (dp[x][y] != Integer.MIN_VALUE) {
+            return dp[x][y];
+        }
+        vis[x][y] = true;
+        dp[x][y] = getProfit(maze, maze.getBlock(x, y));
+        int tar = 0;
+        for (int status = 0; status < 1 << 4; status++) {
+            long tmp = 0;
+            for (int j = 0; j < 4; j++) {
+                if ((status & (1 << j)) > 0) {
+                    int nx = x + mov[j].getX();
+                    int ny = y + mov[j].getY();
+                    if (nx >= 0 && nx < maze.getBoardSize() && ny >= 0 && ny < maze.getBoardSize() && maze.getBlock(
+                            nx, ny) != BlockType.WALL && !vis[nx][ny]) {
+                        vis[nx][ny] = true;
+                        tmp += byDp(maze, new Point(nx, ny));
+                        vis[nx][ny] = false;
+                    }
+                }
+                if (dp[x][y] < tmp && tmp > 0) {
+                    dp[x][y] = tmp;
+                    tar = status;
+                }
+            }
+        }
+        if (dp[x][y] > 0) {
+            onTheRoad.put(now, tar);
+        }
+        return dp[x][y];
+    }
 }
