@@ -31,8 +31,9 @@ public class PathSolve implements PathFinder {
         long profit = byDp(maze, maze.getSTART());
 
         buildRoad(maze, maze.getSTART());
-        toBoss   = getBestWayByAStar(maze, maze.getSTART(), maze.getBossPoint());
-        toLocker = getBestWayByAStar(maze, maze.getBossPoint(), maze.getLOCKER());
+        toBoss = getBestWayByAStar(maze, maze.getSTART(), maze.getBossPoint());
+        toLocker = getBestWayByAStar(maze, maze.getBossPoint(),
+                                     maze.getLOCKER());
         toExit = getBestWayByAStar(maze, maze.getLOCKER(), maze.getEXIT());
         path.addAll(toBoss);
         path.addAll(toLocker);
@@ -88,6 +89,7 @@ public class PathSolve implements PathFinder {
         return res;
     }
 
+    //    ( 6,13)
     public int dfs(Maze maze, Point now) {
 //        ! actually the same state will not be visited again
         int x = now.getX();
@@ -141,6 +143,7 @@ public class PathSolve implements PathFinder {
             return dp[x][y];
         }
         vis[x][y] = true;
+        long subPro = 0;
         dp[x][y] = getProfit(maze, maze.getBlock(x, y));
         int tar = 0;
         for (int status = 0; status < 1 << 4; status++) {
@@ -156,12 +159,13 @@ public class PathSolve implements PathFinder {
                         vis[nx][ny] = false;
                     }
                 }
-                if (dp[x][y] < tmp && tmp > 0) {
-                    dp[x][y] = tmp;
+                if (subPro < tmp && tmp > 0) {
+                    subPro = tmp;
                     tar = status;
                 }
             }
         }
+        dp[x][y] = Math.max(0, subPro) + dp[x][y];
         if (dp[x][y] > 0) {
             onTheRoad.put(now, tar);
         }

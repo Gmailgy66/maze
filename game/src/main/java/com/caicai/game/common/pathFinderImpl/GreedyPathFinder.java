@@ -46,7 +46,7 @@ public class GreedyPathFinder {
             if (triggered.contains(p2)) {
                 order2 = 0;
             }
-            return Integer.compare(order, order);
+            return Integer.compare(order2, order);
         });
         for (Point point : points) {
             // ! if the hero already get the target pos then stop the search
