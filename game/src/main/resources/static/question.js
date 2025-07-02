@@ -55,7 +55,7 @@ window.question = {
     data() {
         return {
             question: '',
-            answer: null,
+            answer: null
         }
     },
     mounted() {
@@ -71,9 +71,6 @@ window.question = {
         startSolve(){
             document.getElementById('question').innerText = this.question
             document.getElementById('output').innerText = this.answer
-        },
-        endGame() {
-            this.$emit('close')
         }
     },
     template: `
@@ -83,7 +80,6 @@ window.question = {
         <p id="output"></p>
       </div>
       <button @click="startSolve">开始解答</button>
-      <button v-if="finish" @click="endGame">结束</button>
     </div>
   `
 }

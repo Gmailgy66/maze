@@ -2,17 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Test</title>
+    <title>Quiz</title>
     <script th:src="@{/question.js}"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="./question.js"></script>
     <link rel="stylesheet" th:href="@{/question.css}">
 </head>
 <body>
 
 <div id="app">
-    <button @click="visible=true">开始</button>
-    <question v-if="visible" @close="visible=false"></question>
+    <question></question>
 </div>
 <script>
     const app = Vue.createApp({
