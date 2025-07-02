@@ -163,7 +163,6 @@ const vm = new Vue({
                         var t = 0
                         fetch("http://localhost:8080/getDefaultBoss")
                             .then(res => res.json().then(data => {
-                                alert(data.actions)
                                 t = data.actions.length
                                 this.score -= t
                                 this.bossTriggered++

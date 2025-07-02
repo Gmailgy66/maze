@@ -280,14 +280,15 @@ function exitCombat() {
 }
 
 function startCombat() {
-    if (!selectedFile) {
-        alert("请选择一个文件");
-        return;
-    }
+    // if (!selectedFile) {
+    //     alert("请选择一个文件");
+    //     return;
+    // }
 
     const formData = new FormData();
     formData.append('bossFile', selectedFile);
-    fetch('/uploadBossConfig', {
+    fetch('startCombat',{
+    // fetch('/uploadBossConfig', {
         method: 'POST',
         body: formData
     })
