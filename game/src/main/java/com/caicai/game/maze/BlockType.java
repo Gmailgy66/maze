@@ -52,7 +52,9 @@ public enum BlockType implements Comparable<BlockType> {
     public static final int TRAP_SCORE = -3;
     /** 假出口的分数常量 */
     public static final int FAKE_EXIT_SCORE = 9999;
-    
+    public static final int FAKE_BOSS_SCORE = 9999;
+    public static final int FAKE_LOCKER_SCORE = 9999;
+
     /** 方块的分数值 */
     @Getter
     final int score;

@@ -19,12 +19,18 @@ public class PathSolve implements PathFinder {
     Map<Point, Point> par = new HashMap<>();
     Map<Point, Integer> onTheRoad = new HashMap<>();
     List<Point> toExit = new ArrayList<>();
+    List<Point> toLocker = new ArrayList<>();
+    List<Point> toBoss = new ArrayList<>();
     Map<Point, Integer> profitFromRoot = new HashMap<>();
 
     public List<Point> solve(Maze maze) {
         vis = new boolean[maze.getBoardSize()][maze.getBoardSize()];
         int profit = dfs(maze, maze.getSTART());
         buildRoad(maze, maze.getSTART());
+        path.addAll(toBoss.reversed());
+        path.addAll(toBoss);
+        path.addAll(toLocker.reversed());
+        path.addAll(toLocker);
         path.addAll(toExit.reversed());
         profit -= BlockType.FAKE_EXIT_SCORE;
         System.out.println("path is " + path);
@@ -32,13 +38,22 @@ public class PathSolve implements PathFinder {
         return path;
     }
 
-    public boolean buildRoad(Maze maze, Point root) {
+    public int buildRoad(Maze maze, Point root) {
+//        0000
+//        0001 is EXIT
+//        0010 is LOCKER
+//        0100 is BOSS
+//
         if (root == null || !onTheRoad.containsKey(root)) {
-            return false;
+            return 0;
         }
-        boolean res = false;
-        if (res |= root.equals(maze.getEXIT())) {
-            toExit.add(root);
+        int res = 0;
+        if (root.equals(maze.getEXIT())) {
+            res |= 1; // EXIT
+        } else if (root.equals(maze.getLOCKER())) {
+            res |= 2; // LOCKER
+        } else if (root.equals(maze.getBossPoint())) {
+            res |= 4; // BOSS
         }
         Integer subPoints = onTheRoad.get(root);
         int x = root.getX();
@@ -48,8 +63,16 @@ public class PathSolve implements PathFinder {
                 path.add(root);
                 int nx = x + mov[i].getX();
                 int ny = y + mov[i].getY();
-                if (res |= buildRoad(maze, new Point(nx, ny))) {
+                int subRes= buildRoad(maze, new Point(nx, ny));
+                res|=subRes;
+                if ((res & 1) != 0) {
                     toExit.add(root);
+                }
+                if ((res & 2) != 0) {
+                    toLocker.add(root);
+                }
+                if ((res & 4) != 0) {
+                    toBoss.add(root);
                 }
                 path.add(root);
             }
@@ -72,12 +95,17 @@ public class PathSolve implements PathFinder {
         List<Point> vList = new ArrayList();
         int profit = 0;
         int subPoints = 0000;
-        if (maze.getBlock(x, y) == BlockType.GOLD) {
+        BlockType type = maze.getBlock(x, y);
+        if (type == BlockType.GOLD) {
             profit += Maze.GOLD_SCORE;
-        } else if (maze.getBlock(x, y) == BlockType.TRAP) {
+        } else if (type == BlockType.TRAP) {
             profit += maze.TRAP_SCORE;
-        } else if (maze.getBlock(x, y) == BlockType.EXIT) {
+        } else if (type == BlockType.EXIT) {
             profit += BlockType.FAKE_EXIT_SCORE;
+        } else if (type == BlockType.LOCKER) {
+            profit += BlockType.FAKE_LOCKER_SCORE;
+        } else if (type == BlockType.BOSS) {
+            profit += BlockType.FAKE_BOSS_SCORE;
         }
         for (int i = 0; i < 4; i++) {
             int nx = x + mov[i].getX();
