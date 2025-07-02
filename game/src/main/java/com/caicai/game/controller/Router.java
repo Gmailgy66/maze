@@ -1,6 +1,7 @@
 package com.caicai.game.controller;
 
 import com.caicai.game.Game;
+import com.caicai.game.combat.Combat;
 import com.caicai.game.common.Result;
 import com.caicai.game.conf.GameConf;
 import com.caicai.game.quiz.Question;
@@ -141,5 +142,11 @@ public class Router {
                          .put("msg",
                               "Failed to load default boss configuration: " + e.getMessage());
         }
+    }
+
+    @ResponseBody
+    @RequestMapping("/getDefaultBoss")
+    public Map<String, Object> getDefaultBoss() {
+        return new Combat().start();
     }
 }

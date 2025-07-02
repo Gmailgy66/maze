@@ -31,6 +31,8 @@ const vm = new Vue({
         goldCollected: 0,
         trapsTriggered: 0,
         skillsCollected: 0,
+        bossTriggered: 0,
+        lockerTriggered: 0,
         skills: [],
         boss: [],
         path: [],
@@ -97,9 +99,9 @@ const vm = new Vue({
         calculateScoreChange(cellType) {
             switch (cellType) {
                 case 'GOLD':
-                    return 5;
+                    return 50;
                 case 'TRAP':
-                    return -3;
+                    return -30;
                 case 'SKILL':
                     return 0; // Small bonus for collecting skills
                 default:
@@ -136,13 +138,13 @@ const vm = new Vue({
 
             switch (cellType) {
                 case 'GOLD':
-                    scoreChange = 5;
+                    scoreChange = 50;
                     newCellType = 'GOLD_COLLECTED';
                     reason = 'Gold collected';
                     this.goldCollected++;
                     break;
                 case 'TRAP':
-                    scoreChange = -3;
+                    scoreChange = -30;
                     newCellType = 'TRAP_TRIGGERED';
                     reason = 'Trap triggered';
                     this.trapsTriggered++;
@@ -153,6 +155,36 @@ const vm = new Vue({
                     reason = 'Skill collected';
                     this.skillsCollected++;
                     break;
+                case 'BOSS':
+                    if (this.bossTriggered !== 0) {
+                        break;
+                    } else {
+                        window.open("http://localhost:8080/combat")
+                        var t = 0
+                        fetch("http://localhost:8080/getDefaultBoss")
+                            .then(res => res.json().then(data => {
+                                alert(data.actions)
+                                t = data.actions.length
+                                this.score -= t
+                                this.bossTriggered++
+                            }))
+                        break;
+                    }
+                case 'LOCKER':
+                    if (this.lockerTriggered !== 0) {
+                        break;
+                    } else {
+                        window.open("http://localhost:8080/question")
+                        var t = 0
+                        fetch("http://localhost:8080/quiz")
+                            .then(res => res.json().then(data => {
+                                t = data.times
+                                this.score -= t
+                                this.lockerTriggered++
+                            }))
+                        break;
+                    }
+
                 default:
                     return; // No processing needed for other cell types
             }
@@ -224,7 +256,7 @@ const vm = new Vue({
                 this.curInd = -1;
                 console.log("Path data received:", this.path);
                 this.processPathSegments();
-                console.log("Path solved:", { path: this.path, segments: this.segments });
+                console.log("Path solved:", {path: this.path, segments: this.segments});
             } catch (error) {
                 console.error("Failed to solve path:", error);
                 this.error = "Failed to solve the maze. Please try again.";
@@ -250,7 +282,7 @@ const vm = new Vue({
                 console.log("Path data received:", this.path);
                 this.processPathSegments();
 
-                console.log("Path solved:", { path: this.path, segments: this.segments });
+                console.log("Path solved:", {path: this.path, segments: this.segments});
             } catch (error) {
                 console.error("Failed to solve path:", error);
                 this.error = "Failed to solve the maze. Please try again.";
@@ -357,7 +389,7 @@ const vm = new Vue({
                     }
 
                     // Update hero position
-                    this.heroPos = { x: point.x, y: point.y };
+                    this.heroPos = {x: point.x, y: point.y};
 
                     // Add movement animation to new position
                     const cell = this.getCell(point.x, point.y);
@@ -411,7 +443,7 @@ const vm = new Vue({
                     }
 
                     // Update hero position
-                    this.heroPos = { x: point.x, y: point.y };
+                    this.heroPos = {x: point.x, y: point.y};
 
                     // Add movement animation to new position
                     const cell = this.getCell(point.x, point.y);

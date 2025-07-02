@@ -3,6 +3,7 @@ package com.caicai.game.quiz;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.InputStream;
@@ -109,26 +110,32 @@ public class PasswordSolver {
 
         StringBuilder ans = new StringBuilder();
         ans.append("=== Method 1: 回溯顺序递增 ===\n");
-        ans.append(runBacktracking(0, 1));
+        var m1 = runBacktracking(0, 1);
+        ans.append(m1.getLeft());
 
         ans.append("=== Method 2: 回溯倒序递减 ===\n");
-        ans.append(runBacktracking(9, -1));
+        var m2 = runBacktracking(9, -1);
+        ans.append(m2.getLeft());
 
         ans.append("=== Method 3: 回溯按线索优先排序 ===\n");
-        ans.append(runBacktrackingWithCluePriority());
+        var m3 = runBacktrackingWithCluePriority();
+        ans.append(m3.getLeft());
+
+        var t = Math.min(m1.getRight(),Math.min(m2.getRight(),m3.getRight()));
+        map.put("times",t);
 
         map.put("ans", ans.toString());
         return map;
     }
 
     // 从startDigit开始，每次递增step
-    private String runBacktracking(int startDigit, int step) throws Exception {
+    private Pair<String,Integer> runBacktracking(int startDigit, int step) throws Exception {
         StringBuilder result = new StringBuilder();
         int[] tries = {0};
         boolean[] found = {false};
         backtrack(new ArrayList<>(), startDigit, step, tries, result, found);
         if (!found[0]) result.append("未找到匹配密码！\n");
-        return result.toString();
+        return Pair.of(result.toString(),tries[0]);
     }
 
     // 尝试所有可能的三位组合
@@ -166,7 +173,7 @@ public class PasswordSolver {
     // 生成所有三位数组合
     // 接着统计符合线索的三位数
     // 然后进行校验
-    private String runBacktrackingWithCluePriority() throws Exception {
+    private Pair<String,Integer> runBacktrackingWithCluePriority() throws Exception {
         StringBuilder result = new StringBuilder();
         List<int[]> candidates = new ArrayList<>();
         for (int i = 0; i <= 9; i++)
@@ -185,10 +192,10 @@ public class PasswordSolver {
             if (hash.equalsIgnoreCase(targetHash)) {
                 result.append("匹配成功！密码为: ").append(pwdStr).append("\n");
                 result.append("总尝试次数: ").append(tries).append("\n");
-                return result.toString();
+                return Pair.of(result.toString(),tries);
             }
         }
-        return "未找到匹配密码！\n";
+        return Pair.of("未找到匹配密码！\n",0);
     }
 
     private static boolean satisfyAllClues(int[] pwd) {
